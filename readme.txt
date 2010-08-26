@@ -13,26 +13,29 @@ An extensive, customisable, fully featured user tracking plugin.
 == Description ==
 
 The LBAK User Tracking plugin is a fully featured, page by page tracking plugin for your blog. Every time a page is visited on your blog, the plugin logs a whole host of information on the person who visited the page.
-
+<br /><br />
 The plugin is totally customisable from what you decide to track to what you decide you want to see. There is an optional dashboard widget included for a quick overview of recent visitors as well as a search feature for you to accurately sift through your tracking log and find the results you are looking for.
-
-Data that is tracked by default:
-
--IP address (including an attempt to locate IP addresses from behind a proxy)
--The HTTP referrer (what page the user was viewing before they clicked)
--The time of the click
--User ID
--User Level (admin, editor, so on)
--Display Name
--Browser
--Operating System
--The page they visited
-
-Data that is not tracked by default but can be enabled:
-
--GET variables
--POST variables
--Cookies
+<br /><br />
+<b>Data that is tracked by default:</b>
+<br /><br />
+-IP address (including an attempt to locate IP addresses from behind a proxy)<br />
+-The HTTP referrer (what page the user was viewing before they clicked)<br />
+-The time of the click<br />
+-User ID<br />
+-User Level (admin, editor, so on)<br />
+-Display Name<br />
+-Browser<br />
+-Operating System<br />
+-The page they visited<br />
+<br /><br />
+<b>Data that is not tracked by default but can be enabled:</b>
+<br /><br />
+-GET variables<br />
+-POST variables<br />
+-Cookies<br />
+<br /><br />
+Please be sure to read the "Other Notes" section to view your responsibilities
+in using this plugin.
 
 == Your Responsibility ==
 
