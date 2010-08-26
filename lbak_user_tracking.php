@@ -4,7 +4,7 @@
     Plugin URI: null
     Description: An extensive user tracking plugin.
     Author: Sam Rose
-    Version: ALPHA
+    Version: 1.0
     Author URI: http://lbak.co.uk/
 */
 
