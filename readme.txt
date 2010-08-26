@@ -1,4 +1,4 @@
-=== LBAK USer Tracking ===
+=== LBAK User Tracking ===
 Contributors: Sam Rose
 Author: Sam Rose
 Author URL: http://lbak.co.uk/
