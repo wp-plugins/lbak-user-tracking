@@ -1,7 +1,7 @@
 <?php
 /*
     Plugin Name: LBAK User Tracking
-    Plugin URI: null
+    Plugin URI: http://wordpress.org/extend/plugins/lbak-user-tracking/
     Description: An extensive user tracking plugin.
     Author: Sam Rose
     Version: 1.0
