@@ -9,16 +9,15 @@
 */
 
 /*
-    Dashboard Notepad Copyright (C) 2010  Sam Rose  (email : samwho@lbak.co.uk)
+    LBAK User Tracking Copyright (C) 2010  Sam Rose  (email : samwho@lbak.co.uk)
 
     This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation in the Version 2.
+    it under the terms of the GNU GPL v2.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+    This plugin is distributed without any warranty. The plugin author will not
+    take any responsibility for the data or actions of this software. The
+    plugin author will attempt to support the plugin as much as possible but 
+    there are no guarentees of support or help from the author.
 */
 
 require_once 'php_includes/housekeeping.php';
