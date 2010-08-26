@@ -5,7 +5,7 @@ Author URL: http://lbak.co.uk/
 Tags: tracking, logging, activity
 Requires at least: 3.0.1
 Tested up to: 3.0.1
-Stable tag: 1.0
+Stable tag: 1.0.1
 
 An extensive, customisable, fully featured user tracking plugin.
 
