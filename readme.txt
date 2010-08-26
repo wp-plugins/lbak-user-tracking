@@ -1,12 +1,11 @@
-=== LBAK USer Tracking ===
+=== LBAK User Tracking ===
 Contributors: Sam Rose
 Author: Sam Rose
 Author URL: http://lbak.co.uk/
-Donate link: Located on the Donate page of the plugin settings.
 Tags: tracking, logging, activity
 Requires at least: 3.0.1
 Tested up to: 3.0.1
-Stable tag: 1.0.1
+Stable tag: 1.0
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -16,23 +15,26 @@ The LBAK User Tracking plugin is a fully featured, page by page tracking plugin 
 
 The plugin is totally customisable from what you decide to track to what you decide you want to see. There is an optional dashboard widget included for a quick overview of recent visitors as well as a search feature for you to accurately sift through your tracking log and find the results you are looking for.
 
-Data that is tracked by default:
+*Data that is tracked by default:*
 
--IP address (including an attempt to locate IP addresses from behind a proxy)
--The HTTP referrer (what page the user was viewing before they clicked)
--The time of the click
--User ID
--User Level (admin, editor, so on)
--Display Name
--Browser
--Operating System
--The page they visited
+* IP address (including an attempt to locate IP addresses from behind a proxy)
+* The HTTP referrer (what page the user was viewing before they clicked)
+* The time of the click
+* User ID
+* User Level (admin, editor, so on)
+* Display Name
+* Browser
+* Operating System
+* The page they visited
 
-Data that is not tracked by default but can be enabled:
+*Data that is not tracked by default but can be enabled:*
 
--GET variables
--POST variables
--Cookies
+* GET variables
+* POST variables
+* Cookies
+
+Please be sure to read the "Other Notes" section to view your responsibilities
+in using this plugin.
 
 == Your Responsibility ==
 
@@ -48,7 +50,7 @@ If you are not installing through the built in WordPress method then please
 follow the following steps:
 
 1. Download the plugin .zip file.
-2. Extract the .zip file into /wp-content/plugins/ (make sure that the plugin
+2. Extract the .zip file into /wp* content/plugins/ (make sure that the plugin
 is located in a file called "lbakut")
 3. Go to your plugins page on your WordPress and click "Activite" under the
 LBAK User Tracking plugin.
