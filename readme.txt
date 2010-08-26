@@ -57,6 +57,10 @@ under the "Tools" menu.
 
 == Changelog ==
 
+= 1.0.1 =
+
+* Fixed a problem with loading external stylesheets and javascript.
+
 = 1.0 = 
 
-First stable release.
+* First stable release.
