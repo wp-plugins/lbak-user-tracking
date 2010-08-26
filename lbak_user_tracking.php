@@ -1,10 +1,10 @@
 <?php
 /*
     Plugin Name: LBAK User Tracking
-    Plugin URI: null
+    Plugin URI: http://wordpress.org/extend/plugins/lbak-user-tracking/
     Description: An extensive user tracking plugin.
     Author: Sam Rose
-    Version: BETA
+    Version: 1.0.1
     Author URI: http://lbak.co.uk/
 */
 
@@ -16,9 +16,19 @@
 
     This plugin is distributed without any warranty. The plugin author will not
     take any responsibility for the data or actions of this software. The
-    plugin author will attempt to support the plugin as much as possible but 
+    plugin author will attempt to support the plugin as much as possible but
     there are no guarentees of support or help from the author.
 */
+
+function lbakut_get_base_url() {
+    return WP_PLUGIN_URL. '/'. basename(dirname(__FILE__));
+}
+
+// i18n
+$plugin_dir = basename(dirname(__FILE__));
+$languages_dir = $plugin_dir.'/languages';
+load_plugin_textdomain( 'lbakut', WP_PLUGIN_DIR.'/'.$languages_dir,
+        $languages_dir );
 
 require_once 'php_includes/housekeeping.php';
 require_once 'php_includes/visual.php';
@@ -30,9 +40,5 @@ add_action('admin_menu', 'lbakut_admin_menu');
 add_action('admin_head', 'lbakut_add_admin_header');
 register_activation_hook(__FILE__, 'lbakut_activation_setup');
 register_uninstall_hook(__FILE__, 'lbakut_uninstall');
-
-// i18n
-$plugin_dir = basename(dirname(__FILE__)). '/languages';
-load_plugin_textdomain( 'lbakut', WP_PLUGIN_DIR.'/'.$plugin_dir, $plugin_dir );
 
 ?>

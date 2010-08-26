@@ -181,7 +181,7 @@ function lbakut_uninstall() {
  * scripts or styles to this.
 */
 function lbakut_add_scripts() {
-    wp_enqueue_script('lbakut_admin_script', '/wp-content/plugins/lbakut/js_includes/admin_page.js');
+    wp_enqueue_script('lbakut_admin_script', lbakut_get_base_url().'/js_includes/admin_page.js');
 }
 
 /*
@@ -189,7 +189,7 @@ function lbakut_add_scripts() {
  */
 function lbakut_add_admin_header() {
     echo '<link type="text/css" rel="stylesheet"
-        href="'.get_bloginfo('wpurl').'/wp-content/plugins/lbakut/css_includes/admin_head.css?v=1.0" /> ' . "\n";
+        href="'.lbakut_get_base_url().'/css_includes/admin_head.css?v=1.0" /> ' . "\n";
 }
 
 
