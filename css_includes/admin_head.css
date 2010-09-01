@@ -14,6 +14,15 @@
 #lbakut_widget {
     overflow: auto;
 }
+#lbakut_browser_widget {
+    overflow: auto;
+}
+#lbakut_os_widget {
+    overflow: auto;
+}
+#lbakut_pageviews_widget {
+    overflow: auto;
+}
 
 .lbakut_pages {
     margin-left: auto;

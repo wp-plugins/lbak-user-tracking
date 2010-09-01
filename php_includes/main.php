@@ -5,7 +5,7 @@
  * 'init' action. It has 'start' in the name because there were originally two
  * activity logging functions but the 'end' one was not very useful and was
  * scrapped.
- */
+*/
 function lbakut_log_activity_start() {
     //Declare global variables.
     global $wpdb;
@@ -14,12 +14,17 @@ function lbakut_log_activity_start() {
     //Retrieve options from database.
     $options = lbakut_get_options();
 
+    //Short circuit if they're ignoring admins.
+    if ($options['track_ignore_admin'] && $current_user->user_level == 10) {
+        return;
+    }
+
     //Get the specific file name without any leading directories.
     $filename = end(explode('/', $_SERVER['SCRIPT_NAME']));
 
     //Ignore the wp-cron.php, index-extra.php and admin-ajax.php files.
     //They are ignored because they get pretty spammy and don't tell us much...
-    if ($filename == "wp-cron.php" || 
+    if ($filename == "wp-cron.php" ||
             $filename == "admin-ajax.php" ||
             $filename == "index-extra.php") {
         return;
@@ -38,55 +43,62 @@ function lbakut_log_activity_start() {
 
     //IP ADDRESS
     if ($options['track_ip'] == true) {
-        $data['ip_address'] = $wpdb->escape($_SERVER['REMOTE_ADDR']);
+        $data['ip_address'] = $_SERVER['REMOTE_ADDR'];
         $format[] = '%s';
     }
-    
+
     //REFERRER
     if ($options['track_referrer'] == true) {
-        $data['referrer'] = $wpdb->escape($_SERVER['HTTP_REFERER']);
+        $data['referrer'] = $_SERVER['HTTP_REFERER'];
         $format[] = '%s';
     }
-    
+
     //TIME
     if ($options['track_time'] == true) {
         $data['time'] = time();
         $format[] = '%d';
     }
-    
+
     //USER ID
     if ($options['track_user_id'] == true) {
-        $data['user_id'] = $wpdb->escape($current_user->ID);
+        $data['user_id'] = $current_user->ID;
         $format[] = '%d';
     }
-    
+
     //USER LEVEL
     if ($options['track_user_level'] == true) {
-        $data['user_level'] = $wpdb->escape($current_user->user_level);
+        $data['user_level'] = $current_user->user_level;
         $format[] = '%d';
     }
-    
+
     //DISPLAY NAME
     if ($options['track_display_name'] == true) {
-        $data['display_name'] = $wpdb->escape($current_user->display_name);
+        $data['display_name'] = $current_user->display_name;
         $format[] = '%s';
     }
-    
+
     //USER AGENT
     if ($options['track_user_agent'] == true) {
-        $data['user_agent'] = $wpdb->escape($_SERVER['HTTP_USER_AGENT']);
+        $data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
         $format[] = '%s';
     }
-    
+
     //SCRIPT NAME
     if ($options['track_script_name'] == true) {
-        $data['script_name'] = $wpdb->escape($_SERVER['SCRIPT_NAME']);
+        $data['script_name'] = $_SERVER['SCRIPT_NAME'];
         $format[] = '%s';
     }
-    
+
+    //PAGE TITLE
+    if ($options['track_page_title'] == true) {
+        $data['page_title'] = wp_title('', false);
+        $format[] = '%s';
+        echo wp_title('',FALSE,'');
+    }
+
     //QUERY_STRING
     if ($options['track_query_string'] == true) {
-        $data['query_string'] = $wpdb->escape($_SERVER['QUERY_STRING']);
+        $data['query_string'] = $_SERVER['QUERY_STRING'];
         $format[] = '%s';
     }
 
@@ -98,7 +110,7 @@ function lbakut_log_activity_start() {
             if (is_array($p)) $p = join(",",$p);
             $cookies .= "$v=$p&";
         }
-        $data['cookies'] = $wpdb->escape($cookies);
+        $data['cookies'] = $cookies;
         $format[] = '%s';
     }
 
@@ -110,14 +122,14 @@ function lbakut_log_activity_start() {
             if (is_array($p)) $p = join(",",$p);
             $postvars .= "$v=$p&";
         }
-        $data['post_vars'] = $wpdb->escape($postvars);
+        $data['post_vars'] = $postvars;
         $format[] = '%s';
     }
 
     //REAL_IP
     if ($options['track_real_ip'] == true) {
-        $data['real_ip_address'] = 
-            (lbakut_get_user_ip() == $_SERVER['REMOTE_ADDR']) ?
+        $data['real_ip_address'] =
+                (lbakut_get_user_ip() == $_SERVER['REMOTE_ADDR']) ?
                 '' : lbakut_get_user_ip();
         $format[] = '%s';
     }
@@ -133,47 +145,80 @@ function lbakut_log_activity_start() {
  *
  * To stop every single call to this function parsing the .ini file, you can
  * supply a pre-parsed version of it as the second parameter.
- */
-function lbakut_browser_info($agent, $brows = null) {
-    $agent=$agent?$agent:$_SERVER['HTTP_USER_AGENT'];
-    $yu=array();
-    $q_s=array("#\.#","#\*#","#\?#");
-    $q_r=array("\.",".*",".?");
-    if ($brows == null) {
-        if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
-            $brows = parse_ini_file("php_browscap.ini", true, INI_SCANNER_RAW);
-        } else {
-            $brows = parse_ini_file("php_browscap.ini", true);
-        }
+*/
+function lbakut_browser_info($agent = null, $brows = null) {
+
+    $agent = $agent ? $agent : $_SERVER['HTTP_USER_AGENT'];
+
+    if (lbakut_get_browscap_from_cache($agent)) {
+        return lbakut_get_browscap_from_cache($agent);
     }
+
+    $yu = array();
+    $q_s = array("#\.#","#\*#","#\?#");
+    $q_r = array("\.",".*",".?");
+
+    if ($brows == null) {
+        $brows = lbakut_get_browscap();
+    }
+
     foreach($brows as $k=>$t) {
+
         if(fnmatch($k,$agent)) {
-            $yu['browser_name_pattern']=$k;
-            $pat=preg_replace($q_s,$q_r,$k);
-            $yu['browser_name_regex']=strtolower("^$pat$");
-            foreach($brows as $g=>$r) {
-                if($t['Parent']==$g) {
+            $yu['browser_name_pattern'] = $k;
+            $pat = preg_replace($q_s,$q_r,$k);
+            $yu['browser_name_regex'] = strtolower("^$pat$");
+
+            foreach($brows as $g => $r) {
+
+                if($t['Parent'] == $g) {
+
                     foreach($brows as $a=>$b) {
+
                         if($r['Parent']==$a) {
                             $yu=array_merge($yu,$b,$r,$t);
+
                             foreach($yu as $d=>$z) {
                                 $l=strtolower($d);
                                 $hu[$l]=$z;
-                            }
-                        }
-                    }
-                }
-            }
+                            } // end foreach
+
+                        } // end if
+
+                    } // end foreacn
+
+                } //end if
+
+            } // end foreach
+
             break;
         }
     }
-    return $hu;
+
+
+    if ($hu) {
+        foreach($hu as $k => $v) {
+            switch($v) {
+                case 'true': $hu[$k] = true;
+                    break;
+                case 'false': $hu[$k] = false;
+                    break;
+                default: $hu[$k] = $hu[$k];
+                    break;
+            }
+        }
+
+        return $hu;
+    }
+    else {
+        return false;
+    }
 }
 
 /*
  * This function was not created by me and is not actually used in the code of
  * this plugin. It is kept just in case it is needed in future.
- */
+*/
 function lbakut_os_info() {
     $OSList = array
             (
@@ -212,7 +257,7 @@ function lbakut_os_info() {
 /*
  * Another function I didn't write. Obtained from here:
  * http://thepcspy.com/read/getting_the_real_ip_of_your_users/
- */
+*/
 function lbakut_get_user_ip() {
     if (isset($_SERVER)) {
 
@@ -234,11 +279,95 @@ function lbakut_get_user_ip() {
     return getenv('REMOTE_ADDR');
 }
 
-/*
- * A function that gets the current version of the lbakut plugin.
+/**
+ * Get a web file (HTML, XHTML, XML, image, etc.) from a URL.
+ *
+ * Courtesy of:
+ * http://nadeausoftware.com/articles/2007/06/php_tip_how_get_web_page_using_curl
  */
-function lbakut_get_version() {
-    return 'ALPHA';
+function lbakut_get_web_page( $url ) {
+    if (lbakut_get_curl()) {
+        $options = array(
+                CURLOPT_RETURNTRANSFER => true,     // return web page
+                CURLOPT_HEADER         => false,    // don't return headers
+                CURLOPT_FOLLOWLOCATION => true,     // follow redirects
+                CURLOPT_ENCODING       => "",       // handle all encodings
+                CURLOPT_USERAGENT      => "spider", // who am i
+                CURLOPT_AUTOREFERER    => true,     // set referer on redirect
+                CURLOPT_CONNECTTIMEOUT => 120,      // timeout on connect
+                CURLOPT_TIMEOUT        => 120,      // timeout on response
+                CURLOPT_MAXREDIRS      => 10,       // stop after 10 redirects
+        );
+
+        $ch      = curl_init( $url );
+        curl_setopt_array( $ch, $options );
+        $content = curl_exec( $ch );
+        $err     = curl_errno( $ch );
+        $errmsg  = curl_error( $ch );
+        $header  = curl_getinfo( $ch );
+        curl_close( $ch );
+
+        if ($err != 0) {
+            return false;
+        }
+
+        return $content;
+    }
+    else if (lbakut_get_allow_url_fopen()) {
+        return file_get_contents($url);
+    }
+    else {
+        return false;
+    }
+}
+
+function lbakut_get_curl() {
+    if  (in_array('curl', get_loaded_extensions())) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+function lbakut_get_allow_url_fopen() {
+    $allow_url_fopen = ini_get("allow_url_fopen");
+    if ($allow_url_fopen != "" && $allow_url_fopen != null) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+/*
+ * Parsing the browscap ini file with backwards compatibility.
+*/
+function lbakut_get_browscap() {
+    if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
+        return parse_ini_file(
+                lbakut_get_base_dir()."/php_includes/php_browscap.ini", true,
+                INI_SCANNER_RAW);
+    } else {
+        return parse_ini_file(
+                lbakut_get_base_dir()."/php_includes/php_browscap.ini", true);
+    }
+}
+
+/*
+ * Flattens an array. DUH.
+ */
+function lbakut_array_flatten($array, $return = null) {
+    for($x = 0; $x <= count($array); $x++) {
+        if(is_array($array[$x])) {
+            $return = lbakut_array_flatten($array[$x],$return);
+        }
+        else {
+            if($array[$x]) {
+                $return[] = $array[$x];
+            }
+        }
+    }
+    return $return;
 }
 
 ?>
