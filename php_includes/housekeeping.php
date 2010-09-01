@@ -20,19 +20,14 @@ function lbakut_activation_setup() {
         $options_exist = false;
     }
 
-    //Declare table name.
+    //Declare table names.
     $main_table_name = $wpdb->prefix . "lbakut_activity_log";
+    $browscache_table_name = $wpdb->prefix . "lbakut_browser_cache";
+    $stats_table_name = $wpdb->prefix . "lbakut_stats";
+    $user_stats_table_name = $wpdb->prefix . "lbakut_user_stats";
 
-    //Check table is not in use.
-    if($wpdb->get_var("SHOW TABLES LIKE '$main_table_name'") != $main_table_name) {
-        $db_main_table_exists = true;
-    }
-    else {
-        $db_main_table_exists = false;
-    }
-
-    $create_main_table_sql = "
-        CREATE TABLE $main_table_name (
+    $create_table_sql = "
+    CREATE TABLE $main_table_name (
             id int NOT NULL AUTO_INCREMENT,
             ip_address text NOT NULL,
             real_ip_address text NOT NULL,
@@ -43,6 +38,7 @@ function lbakut_activation_setup() {
             display_name text NULL,
             user_agent text NOT NULL,
             script_name text NOT NULL,
+            page_title text NOT NULL,
             query_string text NOT NULL,
             post_vars text NOT NULL,
             cookies text NOT NULL,
@@ -53,65 +49,161 @@ function lbakut_activation_setup() {
             KEY user_level (user_level)
         );
             ";
+    $create_table_sql .= "
+    CREATE TABLE $browscache_table_name (
+            id int NOT NULL AUTO_INCREMENT,
+            user_agent text NOT NULL,
+            browser_name_regex text NOT NULL,
+            browser_name_pattern text NOT NULL,
+            parent text NOT NULL,
+            platform text NOT NULL,
+            browser text NOT NULL,
+            version text NOT NULL,
+            majorver mediumint(9) NOT NULL,
+            minorver mediumint(9) NOT NULL,
+            frames tinyint(1) NOT NULL,
+            iframes tinyint(1) NOT NULL,
+            tables_ tinyint(1) NOT NULL,
+            cookies tinyint(1) NOT NULL,
+            javaapplets tinyint(1) NOT NULL,
+            javascript tinyint(1) NOT NULL,
+            cssversion mediumint(9) NOT NULL,
+            supportscss tinyint(1) NOT NULL,
+            alpha tinyint(1) NOT NULL,
+            beta tinyint(1) NOT NULL,
+            win16 tinyint(1) NOT NULL,
+            win32 tinyint(1) NOT NULL,
+            win64 tinyint(1) NOT NULL,
+            backgroundsounds tinyint(1) NOT NULL,
+            cdf tinyint(1) NOT NULL,
+            vbscript tinyint(1) NOT NULL,
+            activexcontrols tinyint(1) NOT NULL,
+            isbanned tinyint(1) NOT NULL,
+            ismobiledevice tinyint(1) NOT NULL,
+            issyndicationreader tinyint(1) NOT NULL,
+            crawler tinyint(1) NOT NULL,
+            aol tinyint(1) NOT NULL,
+            aolversion text NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY user_agent (user_agent(128)),
+            KEY crawler (crawler),
+            KEY issyndicationreader (issyndicationreader)
+        );
+            ";
+    $create_table_sql .= "
+    CREATE TABLE $stats_table_name (
+            id int NOT NULL AUTO_INCREMENT,
+            time int NOT NULL,
+            rows int NOT NULL,
+            recognised int NOT NULL,
+            browser_array text NOT NULL,
+            platform_array text NOT NULL,
+            script_name_array text NOT NULL,
+            user_agents int NOT NULL,
+            frames int NOT NULL,
+            iframes int NOT NULL,
+            tables_ int NOT NULL,
+            cookies int NOT NULL,
+            javaapplets int NOT NULL,
+            javascript tinyint(1) NOT NULL,
+            cssversion int NOT NULL,
+            supportscss int NOT NULL,
+            alpha int NOT NULL,
+            beta int NOT NULL,
+            win16 int NOT NULL,
+            win32 int NOT NULL,
+            win64 int NOT NULL,
+            backgroundsounds int NOT NULL,
+            cdf int NOT NULL,
+            vbscript int NOT NULL,
+            activexcontrols int NOT NULL,
+            isbanned int NOT NULL,
+            ismobiledevice int NOT NULL,
+            issyndicationreader int NOT NULL,
+            crawler int NOT NULL,
+            aol int NOT NULL,
+            aolversion int NOT NULL,
+            PRIMARY KEY (id),
+            KEY time (time)
+        );
+            ";
+    $create_table_sql .= "
+    CREATE TABLE $user_stats_table_name (
+            id int NOT NULL AUTO_INCREMENT,
+            ip text NOT NULL,
+            first_visit int NOT NULL,
+            last_visit int NOT NULL,
+            user_agents text NOT NULL,
+            user_ids text NOT NULL,
+            page_views text NOT NULL,
+            PRIMARY KEY (id),
+            UNIQUE KEY (ip(15))
+        );
+            ";
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     if (function_exists('dbDelta')) {
-        dbDelta($create_main_table_sql);
+        dbDelta($create_table_sql);
     }
     else {
-        if ($db_main_table_exists) {
-            //This is a temporary solution to the dbDelta function not existing.
-            $wpdb->query("DROP TABLE $main_table_name");
-        }
-        $wpdb->query($create_main_table_sql);
+        trigger_error('Could not create tables.', E_USER_ERROR);
     }
-    
+
     $option_default = array(
-        'version' => lbakut_get_version(),
-        'main_table_name' => $main_table_name,
-        'widget_show' => true,
-        'widget_ignored_ips' => array(0 => ''),
-        'widget_ignored_users' => array(0 => ''),
-        'widget_ignore_admin' => false,
-        'widget_show_name' => true,
-        'widget_show_ip' => true,
-        'widget_show_real_ip' => false,
-        'widget_show_page' => true,
-        'widget_show_browser' => true,
-        'widget_show_os' => true,
-        'widget_show_referrer' => false,
-        'widget_show_time' => true,
-        'widget_show_get' => false,
-        'widget_show_post' => false,
-        'widget_show_cookies' => false,
-        'widget_no_to_display' => 10,
-        'delete_on_uninstall' => true,
-        'track_ip' => true,
-        'track_real_ip' => true,
-        'track_referrer' => true,
-        'track_time' => true,
-        'track_user_id' => true,
-        'track_user_level' => true,
-        'track_display_name' => true,
-        'track_user_agent' => true,
-        'track_script_name' => true,
-        'track_query_string' => false,
-        'track_post_vars' => false,
-        'track_cookies' => false,
-        'search_show_name' => true,
-        'search_show_ip' => true,
-        'search_show_real_ip' => false,
-        'search_show_user_id' => false,
-        'search_show_user_level' => false,
-        'search_show_page' => true,
-        'search_show_browser' => true,
-        'search_show_os' => true,
-        'search_show_referrer' => false,
-        'search_show_time' => true,
-        'search_show_get' => false,
-        'search_show_post' => false,
-        'search_show_cookies' => false,
-        'search_no_to_display' => 20
+            'version' => lbakut_get_version(),
+            'main_table_name' => $main_table_name,
+            'browscache_table_name' => $browscache_table_name,
+            'stats_table_name' => $stats_table_name,
+            'user_stats_table_name' => $user_stats_table_name,
+            'widget_show' => true,
+            'widget_ignored_ips' => array(0 => ''),
+            'widget_ignored_users' => array(0 => ''),
+            'widget_ignore_admin' => false,
+            'widget_show_name' => true,
+            'widget_show_ip' => true,
+            'widget_show_real_ip' => false,
+            'widget_show_page' => false,
+            'widget_show_browser' => true,
+            'widget_show_os' => true,
+            'widget_show_referrer' => false,
+            'widget_show_time' => true,
+            'widget_show_get' => false,
+            'widget_show_post' => false,
+            'widget_show_cookies' => false,
+            'widget_no_to_display' => 10,
+            'delete_on_uninstall' => true,
+            'track_ip' => true,
+            'track_real_ip' => true,
+            'track_referrer' => true,
+            'track_time' => true,
+            'track_user_id' => true,
+            'track_user_level' => true,
+            'track_display_name' => true,
+            'track_user_agent' => true,
+            'track_script_name' => true,
+            'track_query_string' => false,
+            'track_post_vars' => false,
+            'track_cookies' => false,
+            'track_ignore_admin' => false,
+            'search_show_name' => true,
+            'search_show_ip' => true,
+            'search_show_real_ip' => false,
+            'search_show_user_id' => false,
+            'search_show_user_level' => false,
+            'search_show_page' => false,
+            'search_show_browser' => true,
+            'search_show_os' => true,
+            'search_show_referrer' => false,
+            'search_show_time' => true,
+            'search_show_get' => false,
+            'search_show_post' => false,
+            'search_show_cookies' => false,
+            'search_no_to_display' => 20,
+            'stats_enable_shortcodes' => true,
+            'stats_update_frequency' => 'daily',
+            'stats_browser_widget' => false,
+            'stats_os_widget' => false,
+            'stats_pageviews_widget' => false
     );
 
     //BEGIN OPTION INITIALISATION LOOP
@@ -146,6 +238,8 @@ function lbakut_activation_setup() {
     //Add AND update to account for the plugin already being there.
     add_option('lbakut_options', null, null, 'no');
     lbakut_update_options($options);
+
+    lbakut_cron_jobs('set');
 }
 
 /*
@@ -155,25 +249,19 @@ function lbakut_activation_setup() {
 */
 function lbakut_uninstall() {
     global $wpdb;
-
     $options = lbakut_get_options();
 
     if ($options['delete_on_uninstall'] == true) {
-
-        if ($options['main_table_name']) {
-            //Drop the rv_activity_log table.
-            $wpdb->query('DROP TABLE `' . $options['main_table_name'] . '`');
-        }
-        else {
-            //Table name option not defined... No idea why this would happen
-            //but it can't hurt to have it checked :p
-            trigger_error(__("Could not delete LBAK User Tracking database.", 'lbakut'), E_USER_ERROR);
-
-        }
+        $wpdb->query('DROP TABLE `' . $options['main_table_name'] . '`');
+        $wpdb->query('DROP TABLE `' . $options['stats_table_name'] . '`');
+        $wpdb->query('DROP TABLE `' . $options['browscache_table_name'] . '`');
 
         //Erase options field in the settings table.
         lbakut_delete_options();
     }
+
+    //Remove the WP Cron jobs.
+    lbakut_cron_jobs('remove');
 }
 
 /*
@@ -181,21 +269,74 @@ function lbakut_uninstall() {
  * scripts or styles to this.
 */
 function lbakut_add_scripts() {
-    wp_enqueue_script('lbakut_admin_script', lbakut_get_base_url().'/js_includes/admin_page.js');
+    wp_enqueue_script('lbakut_admin_script', lbakut_get_base_url().'/js_includes/admin_page.js?v='.filectime(lbakut_get_base_dir().'/js_includes/admin_page.js'));
 }
 
 /*
  * Adding to the admin header. This is called on the admin_head action.
- */
+*/
 function lbakut_add_admin_header() {
     echo '<link type="text/css" rel="stylesheet"
         href="'.lbakut_get_base_url().'/css_includes/admin_head.css?v=1.0" /> ' . "\n";
 }
 
+/*
+ * Update the browscap file from Gary Keith's webpage.
+*/
+function lbakut_update_browscap() {
+    $filename = lbakut_get_base_dir() . '/php_includes/php_browscap.ini';
+    $data = lbakut_get_web_page('http://browsers.garykeith.com/stream.asp?PHP_BrowsCapINI');
+    if (file_put_contents($filename, $data)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function lbakut_cron_jobs($operation = 'reset') {
+    $options = lbakut_get_options();
+
+    if ($operation == 'remove' || $operation == 'reset') {
+
+        //Remove the WP Cron jobs.
+        if (($timestamp = wp_next_scheduled( 'lbakut_update_browscap'))) {
+            wp_unschedule_event($timestamp, 'lbakut_update_browscap');
+        }
+        if (($timestamp = wp_next_scheduled( 'lbakut_do_cache_and_stats'))) {
+            wp_unschedule_event($timestamp, 'lbakut_do_cache_and_stats');
+        }
+        if (($timestamp = wp_next_scheduled( 'lbakut_do_user_stats'))) {
+            wp_unschedule_event($timestamp, 'lbakut_do_user_stats');
+        }
+
+    }
+
+    if ($operation == 'set' || $operation == 'reset') {
+
+        //Add the browscap updating function to the WP Cron.
+        if (!wp_next_scheduled('lbakut_update_browscap')) {
+            wp_schedule_event( strtotime('tomorrow')-120, 'weekly',
+                    'lbakut_update_browscap' );
+        }
+        //Add the stats and caching function to the WP Cron.
+        if (!wp_next_scheduled('lbakut_do_cache_and_stats')) {
+            wp_schedule_event( strtotime('tomorrow'), $options['stats_update_frequency'],
+                    'lbakut_do_cache_and_stats' );
+        }
+        //Add the user stats function to the WP Cron.
+        if (!wp_next_scheduled('lbakut_do_user_stats')) {
+            wp_schedule_event( strtotime('tomorrow'), $options['stats_update_frequency'],
+                    'lbakut_do_user_stats' );
+        }
+
+    }
+}
+
 
 /*
  * Functions to get, delete and update the lbakut options.
- */
+*/
 function lbakut_get_options() {
     return get_option('lbakut_options');
 }

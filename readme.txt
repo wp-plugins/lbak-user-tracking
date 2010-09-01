@@ -1,11 +1,12 @@
 === LBAK User Tracking ===
-Contributors: Sam Rose
+Contributors: samwho
 Author: Sam Rose
 Author URL: http://lbak.co.uk/
-Tags: tracking, logging, activity
+Donate link: http://donate.lbak.co.uk/
+Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0.1
 Tested up to: 3.0.1
-Stable tag: 1.0.1
+Stable tag: 1.2
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -50,14 +51,25 @@ If you are not installing through the built in WordPress method then please
 follow the following steps:
 
 1. Download the plugin .zip file.
-2. Extract the .zip file into /wp* content/plugins/ (make sure that the plugin
-is located in a file called "lbakut")
+2. Extract the .zip file into /wp-content/plugins/ (make sure that the plugin
+is located in a file called "lbak-user-tracking")
 3. Go to your plugins page on your WordPress and click "Activite" under the
 LBAK User Tracking plugin.
 4. You're good to go! If you want to edit any settings click on "User Tracking"
 under the "Tools" menu.
 
 == Changelog ==
+
+= 1.2 =
+
+* Fixed the button that adds User IDs to the User ID ignore list.
+* Revamped the look of the settings page.
+* Added a Help/FAQ menu.
+* Added a whole new stats and caching system the runs on a schedule and has
+dashboard widgets.
+* Browser definitions file now updates weekly.
+* Made the donate button link to my donate page.
+* Added an option to stop tracking admin users. Less clutter.
 
 = 1.0.1 =
 

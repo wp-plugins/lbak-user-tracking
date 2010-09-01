@@ -4,7 +4,7 @@
     Plugin URI: http://wordpress.org/extend/plugins/lbak-user-tracking/
     Description: An extensive user tracking plugin.
     Author: Sam Rose
-    Version: 1.0.1
+    Version: 1.2
     Author URI: http://lbak.co.uk/
 */
 
@@ -23,6 +23,12 @@
 function lbakut_get_base_url() {
     return WP_PLUGIN_URL. '/'. basename(dirname(__FILE__));
 }
+function lbakut_get_base_dir() {
+    return WP_PLUGIN_DIR. '/'. basename(dirname(__FILE__));
+}
+function lbakut_get_version() {
+    return '1.2';
+}
 
 // i18n
 $plugin_dir = basename(dirname(__FILE__));
@@ -31,13 +37,26 @@ load_plugin_textdomain( 'lbakut', WP_PLUGIN_DIR.'/'.$languages_dir,
         $languages_dir );
 
 require_once 'php_includes/housekeeping.php';
-require_once 'php_includes/visual.php';
+require_once 'php_includes/stats.php';
 require_once 'php_includes/main.php';
+require_once 'php_includes/visual.php';
+require_once 'php_includes/shortcodes.php';
+
+//Adding more WP Cron options.
+function lbakut_cron_schedules() {
+    return array(
+        'weekly' => array('interval' => 604800, 'display' => 'Once Weekly'),
+        'fortnightly' => array('interval' => 1209600, 'display' => 'Once Fortnightly'),
+    );
+}
+add_filter('cron_schedules', 'lbakut_cron_schedules');
 
 add_action('wp_dashboard_setup', 'lbakut_dashboard_setup');
 add_action('init', 'lbakut_log_activity_start');
+//add_action('shutdown', 'lbakut_log_activity_end');
 add_action('admin_menu', 'lbakut_admin_menu');
 add_action('admin_head', 'lbakut_add_admin_header');
+add_filter('the_content', 'lbakut_parse_shortcode');
 register_activation_hook(__FILE__, 'lbakut_activation_setup');
 register_uninstall_hook(__FILE__, 'lbakut_uninstall');
 
