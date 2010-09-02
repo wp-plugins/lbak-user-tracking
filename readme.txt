@@ -6,7 +6,7 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0.1
 Tested up to: 3.0.1
-Stable tag: 1.2
+Stable tag: 1.2.1
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -59,6 +59,10 @@ LBAK User Tracking plugin.
 under the "Tools" menu.
 
 == Changelog ==
+
+= 1.2.1 =
+
+* Fixed an issue with the event scheduling.
 
 = 1.2 =
 

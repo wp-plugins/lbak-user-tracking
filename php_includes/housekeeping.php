@@ -316,18 +316,21 @@ function lbakut_cron_jobs($operation = 'reset') {
 
         //Add the browscap updating function to the WP Cron.
         if (!wp_next_scheduled('lbakut_update_browscap')) {
-            wp_schedule_event( strtotime('tomorrow')-120, 'weekly',
+            wp_schedule_event( time(), 'weekly',
                     'lbakut_update_browscap' );
+            //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_update_browscap')).'<br />';
         }
         //Add the stats and caching function to the WP Cron.
         if (!wp_next_scheduled('lbakut_do_cache_and_stats')) {
-            wp_schedule_event( strtotime('tomorrow'), $options['stats_update_frequency'],
+            wp_schedule_event( time()+120, $options['stats_update_frequency'],
                     'lbakut_do_cache_and_stats' );
+            //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_do_cache_and_stats')).'<br />';
         }
         //Add the user stats function to the WP Cron.
         if (!wp_next_scheduled('lbakut_do_user_stats')) {
-            wp_schedule_event( strtotime('tomorrow'), $options['stats_update_frequency'],
+            wp_schedule_event( time()+240, $options['stats_update_frequency'],
                     'lbakut_do_user_stats' );
+            //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_do_user_stats')).'<br />';
         }
 
     }
