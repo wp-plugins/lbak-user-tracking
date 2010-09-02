@@ -284,10 +284,18 @@ function lbakut_add_admin_header() {
  * Update the browscap file from Gary Keith's webpage.
 */
 function lbakut_update_browscap() {
-    $filename = lbakut_get_base_dir() . '/php_includes/php_browscap.ini';
-    $data = lbakut_get_web_page('http://browsers.garykeith.com/stream.asp?PHP_BrowsCapINI');
-    if (file_put_contents($filename, $data)) {
-        return true;
+    $browscap = lbakut_get_browscap();
+    if ($browscap['GJK_Browscap_Version']['Version'] <
+            intval(lbakut_get_web_page('http://updates.browserproject.com/version-number.asp'))) {
+
+        $filename = lbakut_get_base_dir() . '/php_includes/php_browscap.ini';
+        $data = lbakut_get_web_page('http://browsers.garykeith.com/stream.asp?PHP_BrowsCapINI');
+        if (file_put_contents($filename, $data)) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     else {
         return false;
