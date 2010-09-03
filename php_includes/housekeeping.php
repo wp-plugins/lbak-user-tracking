@@ -281,7 +281,9 @@ function lbakut_add_admin_header() {
 }
 
 /*
- * Update the browscap file from Gary Keith's webpage.
+ * Update the browscap file from Gary Keith's webpage. Note that doing this
+ * more than once daily could see you banned from accessing his website.
+ * More details are here: http://browsers.garykeith.com/terms.asp
 */
 function lbakut_update_browscap() {
     $browscap = lbakut_get_browscap();
@@ -324,7 +326,13 @@ function lbakut_cron_jobs($operation = 'reset') {
 
         //Add the browscap updating function to the WP Cron.
         if (!wp_next_scheduled('lbakut_update_browscap')) {
-            wp_schedule_event( time(), 'weekly',
+            /*
+             * IMPORTANT: Please do not change the frequency of this Cron job.
+             * Gary Keith kindly allows me to check his website for updates but
+             * only provided it does not cause too much server load for him.
+             * I accept no responsibility if he bans you from his site
+             */
+            wp_schedule_event( (time()+60*60*24*7), 'weekly',
                     'lbakut_update_browscap' );
             //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_update_browscap')).'<br />';
         }
