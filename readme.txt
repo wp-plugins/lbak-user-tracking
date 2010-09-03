@@ -58,6 +58,13 @@ LBAK User Tracking plugin.
 4. You're good to go! If you want to edit any settings click on "User Tracking"
 under the "Tools" menu.
 
+== Important Notes ==
+
+This plugin uses software developed and maintained by Gary Keith. He allows
+this plugin to check for updates on his site once a week. If this condition is
+violated by you (which requires manual editing of the code, there is no other
+way) then it is possible that you will be banned from accessing his website.
+
 == Changelog ==
 
 = 1.2.2 =
