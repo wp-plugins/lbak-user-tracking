@@ -203,7 +203,11 @@ function lbakut_activation_setup() {
             'stats_update_frequency' => 'daily',
             'stats_browser_widget' => false,
             'stats_os_widget' => false,
-            'stats_pageviews_widget' => false
+            'stats_pageviews_widget' => false,
+            'database_delete_schedule' => false,
+            'database_delete_threshold' => 60,
+            'database_delete_crawlers' => false,
+            'database_delete_last_count' => 0
     );
 
     //BEGIN OPTION INITIALISATION LOOP
@@ -319,6 +323,9 @@ function lbakut_cron_jobs($operation = 'reset') {
         if (($timestamp = wp_next_scheduled( 'lbakut_do_user_stats'))) {
             wp_unschedule_event($timestamp, 'lbakut_do_user_stats');
         }
+        if (($timestamp = wp_next_scheduled( 'lbakut_database_management_cron'))) {
+            wp_unschedule_event($timestamp, 'lbakut_database_management_cron');
+        }
 
     }
 
@@ -331,8 +338,8 @@ function lbakut_cron_jobs($operation = 'reset') {
              * Gary Keith kindly allows me to check his website for updates but
              * only provided it does not cause too much server load for him.
              * I accept no responsibility if he bans you from his site
-             */
-            wp_schedule_event( (time()+60*60*24*7), 'weekly',
+            */
+            wp_schedule_event( (strtotime('tomorrow')+60*60*24*7), 'weekly',
                     'lbakut_update_browscap' );
             //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_update_browscap')).'<br />';
         }
@@ -348,7 +355,36 @@ function lbakut_cron_jobs($operation = 'reset') {
                     'lbakut_do_user_stats' );
             //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_do_user_stats')).'<br />';
         }
+        //Add the database deleting schedule to the WP Cron.
+        if (!wp_next_scheduled('lbakut_database_management_cron')) {
+            wp_schedule_event( strtotime('tomorrow')+1, 'daily',
+                    'lbakut_database_management_cron' );
+            //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_do_user_stats')).'<br />';
+        }
 
+    }
+}
+
+/*
+ * Function to delete records older than a certain age. Runs every day.
+*/
+function lbakut_database_management_cron() {
+    global $wpdb;
+    $options = lbakut_get_options();
+    if ($options['database_delete_schedule'] && $options['database_schedule_threshold']) {
+        $time = time()-60*60*24*intval($options['database_delete_threshold']);
+        $wpdb->query('DELETE FROM `'.$options['main_table_name'].'` WHERE `time`<'.$time);
+        $affected = mysql_affected_rows();
+        if ($options['database_delete_crawlers']) {
+            $wpdb->query('DELETE FROM `'.$options['main_table_name'].'`
+                WHERE `user_agent` IN (
+                    SELECT `user_agent` FROM
+                    `'.$options['browscache_table_name'].'`
+                    WHERE `crawler`=1
+                )');
+            $affected += mysql_affected_rows();
+        }
+        $options['database_delete_last_count'] = $affected;
     }
 }
 

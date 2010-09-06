@@ -27,7 +27,7 @@ function lbakut_get_base_dir() {
     return WP_PLUGIN_DIR. '/'. basename(dirname(__FILE__));
 }
 function lbakut_get_version() {
-    return '1.2';
+    return '1.3';
 }
 
 // i18n
@@ -40,6 +40,7 @@ require_once 'php_includes/housekeeping.php';
 require_once 'php_includes/stats.php';
 require_once 'php_includes/main.php';
 require_once 'php_includes/visual.php';
+require_once 'php_includes/admin.php';
 require_once 'php_includes/shortcodes.php';
 
 //Adding more WP Cron options.
@@ -63,5 +64,6 @@ register_uninstall_hook(__FILE__, 'lbakut_uninstall');
 add_action('lbakut_do_user_stats', 'lbakut_do_user_stats');
 add_action('lbakut_update_browscap', 'lbakut_update_browscap');
 add_action('lbakut_do_cache_and_stats', 'lbakut_do_cache_and_stats');
+add_action('lbakut_database_management_cron', 'lbakut_database_management_cron');
 
 ?>
