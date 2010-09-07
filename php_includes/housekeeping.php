@@ -137,9 +137,19 @@ function lbakut_activation_setup() {
             user_ids text NOT NULL,
             page_views text NOT NULL,
             PRIMARY KEY (id),
-            UNIQUE KEY (ip(15))
+            UNIQUE KEY ip (ip(15))
         );
             ";
+
+    //ONE TIME FIX TO BE REMOVED AFTER THE NEXT RELEASE
+    $keepgoing = true;
+    $count = 1;
+    while ($keepgoing != false) {
+        $keepgoing = $wpdb->query('DROP INDEX `ip_'.$count.'` ON
+            `'.$options['stats_table_name'].'`');
+        $count++;
+    }
+
 
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     if (function_exists('dbDelta')) {
@@ -371,7 +381,7 @@ function lbakut_cron_jobs($operation = 'reset') {
 function lbakut_database_management_cron() {
     global $wpdb;
     $options = lbakut_get_options();
-    if ($options['database_delete_schedule'] && $options['database_schedule_threshold']) {
+    if ($options['database_delete_schedule'] && $options['database_delete_threshold']) {
         $time = time()-60*60*24*intval($options['database_delete_threshold']);
         $wpdb->query('DELETE FROM `'.$options['main_table_name'].'` WHERE `time`<'.$time);
         $affected = mysql_affected_rows();
@@ -385,6 +395,7 @@ function lbakut_database_management_cron() {
             $affected += mysql_affected_rows();
         }
         $options['database_delete_last_count'] = $affected;
+        lbakut_update_options($options);
     }
 }
 

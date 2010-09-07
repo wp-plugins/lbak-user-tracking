@@ -6,7 +6,7 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0.1
 Tested up to: 3.0.1
-Stable tag: 1.3
+Stable tag: 1.4
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -67,6 +67,11 @@ way) then it is possible that you will be banned from accessing his website.
 
 == Changelog ==
 
+= 1.4 =
+
+* Added the new interactive FAQ section.
+* Fixed the database management scheduler.
+
 = 1.3 =
 
 * Added in the database management options.
@@ -97,3 +102,17 @@ dashboard widgets.
 = 1.0 =
 
 * First stable release.
+
+== Frequently Asked Questions ==
+
+The frequently asked questions can be found either inside the plugin or at
+http://lbak.co.uk/faq.php?step=get&tag=lbakut
+
+== Screenshots ==
+
+1. A screenshot of the LBAK User Tracking optional dashboard widget.
+2. The stats page allows you to add some stats widgets to the dashboard.
+3. The LBAK User Tracking search feature that allows you to search your
+entire activity log database for what you need.
+4. The database management page for when you feel you have a little bit too much
+data.
