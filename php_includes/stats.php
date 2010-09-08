@@ -218,6 +218,9 @@ function lbakut_get_chart($stat, $title = null, $width = null, $height = null) {
 }
 
 function lbakut_percent($number, $outof) {
+    if ($outof == 0) {
+        return 0;
+    }
     return number_format($number/$outof*100, 1);
 }
 
