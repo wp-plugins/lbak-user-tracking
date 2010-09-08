@@ -95,6 +95,7 @@ function lbakut_activation_setup() {
             id int NOT NULL AUTO_INCREMENT,
             time int NOT NULL,
             rows int NOT NULL,
+            unique_ips int NOT NULL,
             recognised int NOT NULL,
             browser_array text NOT NULL,
             platform_array text NOT NULL,
@@ -142,11 +143,10 @@ function lbakut_activation_setup() {
             ";
 
     //ONE TIME FIX TO BE REMOVED AFTER THE NEXT RELEASE
-    $keepgoing = true;
-    $count = 1;
-    while ($keepgoing != false) {
-        $keepgoing = $wpdb->query('DROP INDEX `ip_'.$count.'` ON
-            `'.$options['stats_table_name'].'`');
+    $count = 2;
+    while ($count < 20) {
+        $wpdb->query('DROP INDEX `ip_'.$count.'` ON
+            `'.$user_stats_table_name.'`');
         $count++;
     }
 
