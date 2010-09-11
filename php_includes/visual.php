@@ -66,7 +66,6 @@ function lbakut_pageviews_widget() {
 function lbakut_admin_menu() {
     $page = add_submenu_page('tools.php', 'LBAK User Tracking Options',
             'User Tracking', 'manage_options', 'lbakut', 'lbakut_menu_options');
-    add_action('admin_print_scripts-' . $page, 'lbakut_add_scripts');
 }
 
 
@@ -113,9 +112,12 @@ function lbakut_widget() {
             '.$ignore_admin.'
             AND `user_id` NOT IN ('.$user_ids.')';
 
-    echo '<p>To edit the style and behaviour of this widget,
-        <a href="tools.php?page=lbakut">click here</a> or to search these
-        results, <a href="tools.php?page=lbakut&step=search">click here</a>.</p>';
+    echo '<p>Welcome to the LBAK User Tracking dashboard widget.
+        To see more detailed information on a section, hover over the clickable links.
+        <br /><br /><a href="tools.php?page=lbakut" class="button-secondary">Settings</a>
+        <a href="tools.php?page=lbakut&step=search" class="button-secondary">Search</a>
+        <a href="tools.php?page=lbakut&step=stats" class="button-secondary">Stats</a>
+        <a href="tools.php?page=lbakut&step=help" class="button-secondary">Help/FAQ</a></p>';
 
     echo lbakut_print_table($query, 'widget', $options);
 }
@@ -493,7 +495,9 @@ function lbakut_print_table($where_clause, $place, $options = null, $brows = nul
             LIMIT '.$options[$place.'_no_to_display'].'
             OFFSET '.((lbakut_page_var())-1)*$options[$place.'_no_to_display']);
 
-    $return .= lbakut_do_pagination($no_of_results, $place, $options).'<br />';
+    if ($place != 'widget') {
+        $return .= lbakut_do_pagination($no_of_results, $place, $options).'<br />';
+    }
     $return .= '<table class="widefat">';
     $return .= '<thead>';
     if ($options[$place.'_show_time'] == true)
@@ -550,21 +554,49 @@ function lbakut_print_table($where_clause, $place, $options = null, $brows = nul
                     '.$row->user_id.'</td>';
         if ($options[$place.'_show_user_level'] == true)
             $return .= '<td>'.$row->user_level.'</td>';
-        if ($options[$place.'_show_ip'] == true)
-            $return .= '<td><a href="tools.php?page=lbakut&step=search&ip_address='.$row->ip_address.'"
-                title="Search for activity for the ip '.$row->ip_address.'">'.$row->ip_address.'</a></td>';
-        if ($options[$place.'_show_real_ip'] == true)
-            $return .= '<td><a href="tools.php?page=lbakut&step=search&real_ip_address='.$row->real_ip_address.'"
-                title="Search for activity for the ip '.$row->real_ip_address.'">
-                    '.$row->real_ip_address.'</a></td>';
-        if ($options[$place.'_show_browser'] == true)
-            $return .= '<td>'.$browscap['parent'].'</td>';
+        if ($options[$place.'_show_ip'] == true) {
+            $title = lbakut_get_ip_tooltip($row->ip_address, $options, $brows);
+            if ($title) {
+                $return .= '<td><a href="tools.php?page=lbakut&step=search&ip_address='.$row->ip_address.'"
+                    class="ip_address" title="'.$title.'">'.$row->ip_address.'</a></td>';
+            }
+            else {
+                $return .= '<td><a href="tools.php?page=lbakut&step=search&ip_address='.$row->ip_address.'">'.$row->ip_address.'</a></td>';
+            }
+        }
+        if ($options[$place.'_show_real_ip'] == true) {
+            $title = lbakut_get_ip_tooltip($row->real_ip_address, $options, $brows);
+            if ($title) {
+                $return .= '<td><a href="tools.php?page=lbakut&step=search&ip_address='.$row->real_ip_address.'"
+                    class="ip_address" title="'.$title.'">'.$row->real_ip_address.'</a></td>';
+            }
+            else {
+                $return .= '<td><a href="tools.php?page=lbakut&step=search&ip_address='.$row->real_ip_address.'">'.$row->real_ip_address.'</a></td>';
+            }
+        }
+        if ($options[$place.'_show_browser'] == true) {
+            $title = lbakut_get_browser_tooltip($browscap, $options);
+            if ($title) {
+                $return .= '<td><a href="#" class="browser" title="'.$title.'">'.$browscap['parent'].'</a></td>';
+            }
+            else {
+                $return .= '<td>'.$browscap['parent'].'</td>';
+            }
+        }
         if ($options[$place.'_show_os'] == true)
             $return .= '<td>'.$browscap['platform'].'</td>';
         if ($options[$place.'_show_referrer'] == true)
             $return .= $row->referrer ? '<td>'.$referrer['scheme'].'://'.$referrer['host'].$referrer['path'].'</td>' : '<td></td>';
-        if ($options[$place.'_show_page'] == true)
-            $return .= '<td>'.$row->script_name.'</td>';
+        if ($options[$place.'_show_page'] == true) {
+            $title = lbakut_get_page_tooltip($row, $options);
+            if ($title) {
+                $return .= '<td><a href="'.$row->script_name.'" class="script_name"
+                    title="'.$title.'">'.$row->script_name.'</a></td>';
+            }
+            else {
+                $return .= '<td><a href="'.$row->script_name.'" class="script_name">'.$row->script_name.'</a></td>';
+            }
+        }
         if ($options[$place.'_show_page_title'] == true)
             $return .= '<td>'.$row->page_title.'</td>';
         if ($options[$place.'_show_get'] == true)
@@ -581,6 +613,133 @@ function lbakut_print_table($where_clause, $place, $options = null, $brows = nul
     $return .= '<br />'.lbakut_do_pagination($no_of_results, $place, $options);
 
     return $return;
+}
+
+/*
+ * This gets the tooltip to put in the title attribute of the page column
+ * of records tables.
+ */
+function lbakut_get_page_tooltip($row, $options = null) {
+    global $wpdb;
+    if ($options == null) {
+        $options = lbakut_get_options();
+    }
+    if ($row->script_name) {
+        $return = $row->script_name;
+        if ($row->query_string) {
+            $query_string = '?'.$row->query_string;
+        }
+        if ($row->post_vars) {
+            $post_vars = '<br /><br /><b>POST vars</b><br /><br />'.lbakut_query_string_formatter($row->post_vars);
+        }
+        return '<b>Full URL</b><br/>Please note that this is subject to the
+            data you were tracking when this was logged.<br /><br />
+            <a href=\''.$return.$query_string.'\'>'.$return.$query_string.'</a>'.$post_vars;
+    }
+    else {
+        return null;
+    }
+}
+
+/*
+ * This gets the tooltip to put in the title attribute of the browser column
+ * of records tables.
+ */
+function lbakut_get_browser_tooltip($browscap, $brows = null, $options = null) {
+    global $wpdb;
+    if ($options == null) {
+        $options = lbakut_get_options();
+    }
+    if (!$browscap) {
+        return null;
+    }
+
+    $return = '<b>Name</b>: '.$browscap['browser'].'<br />';
+    $return .= '<b>Version</b>: '.$browscap['version'].'<br /><br />';
+    $return .= '<b>Javascript</b>: '.lbakut_yes_no($browscap['javascript']).'<br />';
+    $return .= '<b>Frames</b>: '.lbakut_yes_no($browscap['frames']).'<br />';
+    $return .= '<b>Iframes</b>: '.lbakut_yes_no($browscap['iframes']).'<br />';
+    $return .= '<b>Tables</b>: '.lbakut_yes_no($browscap['tables']).'<br />';
+    $return .= '<b>CSS</b>: '.lbakut_yes_no($browscap['supportscss']).' (v'.$browscap['cssversion'].')<br />';
+    $return .= '<b>Cookies</b>: '.lbakut_yes_no($browscap['cookies']).'<br />';
+    $return .= '<b>Mobile Device</b>: '.lbakut_yes_no($browscap['ismobiledevice']).'<br />';
+    $return .= '<b>Crawler</b>: '.lbakut_yes_no($browscap['crawler']).'<br />';
+    $return .= '<b>Syndication Reader</b>: '.lbakut_yes_no($browscap['issyndicationreader']).'<br />';
+
+    return $return;
+}
+
+function lbakut_yes_no($bool) {
+    if ($bool == true) {
+        return '<span style=\'color: #aaffaa;\'>Yes</span>';
+    }
+    else {
+        return '<span style=\'color: #ffaaaa;\'>No</span>';
+    }
+}
+
+/*
+ * This gets the tooltip to put in the title attribute of the IP address column
+ * of records tables.
+ */
+function lbakut_get_ip_tooltip($ip, $options = null, $brows = null) {
+    global $wpdb;
+    global $lbakut_ip_tooltip_cache;
+    if ($options == null) {
+        $options = lbakut_get_options();
+    }
+
+    //caching mechanism
+    if ($lbakut_ip_tooltip_cache[$ip]) {
+        return $lbakut_ip_tooltip_cache[$ip];
+    }
+
+    $row = $wpdb->get_row('SELECT * FROM `'.$options['user_stats_table_name'].'` WHERE `ip`="'.$wpdb->escape($ip).'"');
+    if ($row != false) {
+        $return .= '<b>First visit:</b> '.lbakut_time_ago_format($row->first_visit).'<br />';
+        $return .= '<b>Last visit:</b> '.lbakut_time_ago_format($row->last_visit).'<br />';
+        $return .= '<b>Last updated:</b> '.lbakut_time_ago_format(lbakut_get_stats_last_updated($options)).'<br /><br />';
+        $users = unserialize($row->user_ids);
+        unset($users[0]); //get rid of guest logins
+
+        if ($users) {
+            $return .= '<b>Accounts</b> <br />';
+            foreach ($users as $user_id => $records) {
+                $userdata = get_userdata($user_id);
+                $return .= $user_id.': <a href=\'user-edit.php?user_id='.$user_id.'\'>'.$userdata->user_login.'</a> - '.$records.' records<br />';
+            }
+        }
+
+        $pages = unserialize($row->page_views);
+
+        if ($pages) {
+            $return .= '<b>Page views</b><br />';
+            foreach ($pages as $page => $clicks) {
+                $return .= '<a href=\''.$page.'\'>'.$page.'</a> - '.$clicks.' views<br />';
+            }
+        }
+
+        $user_agents = unserialize($row->user_agents);
+        if ($user_agents) {
+            $return .= '<b>Browsers</b><br />';
+            foreach ($user_agents as $user_agent) {
+                $browscap = lbakut_browser_info($user_agent, $brows);
+                if ($browscap) {
+                    $return .= $browscap['parent'].'<br />';
+                }
+                else {
+                    $return .= 'Unrecognised.<br />';
+                }
+            }
+        }
+        //Add this result to the cache just in case it is needed later.
+        $lbakut_ip_tooltip_cache[$ip] = $return;
+        return $return;
+    }
+    else {
+        return 'There is nothing on record for this IP address. This information
+            gets updated on the same schedule as the stats page.';
+    }
 }
 
 /*

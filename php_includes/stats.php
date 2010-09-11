@@ -138,7 +138,7 @@ function lbakut_do_user_stats() {
     $options = lbakut_get_options();
     $unique_ip_array = array();
     $page_views_array = array();
-
+    
     $unique_ips = $wpdb->get_results('SELECT DISTINCT `ip_address`
         FROM `'.$options['main_table_name'].'`');
 
@@ -158,6 +158,7 @@ function lbakut_do_user_stats() {
             FROM `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
                 GROUP BY `user_id`');
 
+        $page_views_array = array();
         foreach ($page_views as $r) {
             $page_views_array[$r->script_name] = intval($r->count);
         }
@@ -231,5 +232,13 @@ function lbakut_get_latest_stats($rows = '*', $return_type = OBJECT, $options = 
     }
     return $wpdb->get_row('SELECT '.$rows.' FROM
             `'.$options['stats_table_name'].'` ORDER BY `time` DESC', $return_type);
+}
+function lbakut_get_stats_last_updated($options = null) {
+    global $wpdb;
+    if ($options == null) {
+        $options = lbakut_get_options();
+    }
+    return $wpdb->get_var('SELECT `time` FROM
+            `'.$options['stats_table_name'].'` ORDER BY `time` DESC');
 }
 ?>

@@ -254,6 +254,8 @@ function lbakut_activation_setup() {
     lbakut_update_options($options);
 
     lbakut_cron_jobs('set');
+    lbakut_do_cache_and_stats();
+    lbakut_do_user_stats();
 }
 
 /*
@@ -283,7 +285,10 @@ function lbakut_uninstall() {
  * scripts or styles to this.
 */
 function lbakut_add_scripts() {
+    wp_enqueue_script('jquery');
     wp_enqueue_script('lbakut_admin_script', lbakut_get_base_url().'/js_includes/admin_page.js?v='.filectime(lbakut_get_base_dir().'/js_includes/admin_page.js'));
+    wp_enqueue_script('jquery-tooltip', 'http://cdn.jquerytools.org/1.2.4/jquery.tools.min.js');
+
 }
 
 /*
@@ -291,7 +296,7 @@ function lbakut_add_scripts() {
 */
 function lbakut_add_admin_header() {
     echo '<link type="text/css" rel="stylesheet"
-        href="'.lbakut_get_base_url().'/css_includes/admin_head.css?v=1.0" /> ' . "\n";
+        href="'.lbakut_get_base_url().'/css_includes/admin_head.css?v='.filectime(lbakut_get_base_dir().'/css_includes/admin_head.css').'" /> ' . "\n";
 }
 
 /*
