@@ -18,6 +18,6 @@ function hide(id) {
 
 jQuery(document).ready(function(){
     jQuery('.ip_address[title]').tooltip({'position': 'center right', 'tipClass': 'lbakut_tooltip'});
-    jQuery('.script_name[title]').tooltip({'position': 'center right', 'tipClass': 'lbakut_tooltip'});
+    jQuery('.script_name[title]').tooltip({'position': 'center left', 'tipClass': 'lbakut_tooltip'});
     jQuery('.browser[title]').tooltip({'position': 'center right', 'tipClass': 'lbakut_tooltip'});
 })

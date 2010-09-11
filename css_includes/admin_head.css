@@ -74,6 +74,8 @@
     max-width: 300px;
     padding:12px;
     color:#fff;
+    z-index: 3;
+    word-wrap: break-word;
 }
 .lbakut_tooltip a {
     font-weight: bold;
