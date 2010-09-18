@@ -1,5 +1,7 @@
 <?php
 function lbakut_do_cache_and_stats() {
+    //Run the user stats function first
+    lbakut_do_user_stats();
     set_time_limit(0);
     ignore_user_abort(true);
     global $wpdb;
@@ -109,7 +111,7 @@ function lbakut_do_cache_and_stats() {
 
 /*
  * Return browscap stats from the cache.
- */
+*/
 function lbakut_get_browscap_from_cache($user_agent, $options = null) {
     global $wpdb;
     if ($options == null) {
@@ -117,7 +119,7 @@ function lbakut_get_browscap_from_cache($user_agent, $options = null) {
     }
 
     $user_agent = $wpdb->escape($user_agent);
-    
+
     $row = $wpdb->get_row("SELECT * FROM `".$options['browscache_table_name']."`
         WHERE `user_agent`='$user_agent' LIMIT 1", ARRAY_A);
     //Becuase tables is a mysql keyword, convert it on retrieval.
@@ -138,9 +140,12 @@ function lbakut_do_user_stats() {
     $options = lbakut_get_options();
     $unique_ip_array = array();
     $page_views_array = array();
-    
+    $last_updated = intval(lbakut_get_stats_last_updated());
+    //$wpdb->show_errors();
+
     $unique_ips = $wpdb->get_results('SELECT DISTINCT `ip_address`
-        FROM `'.$options['main_table_name'].'`');
+        FROM `'.$options['main_table_name'].'`
+        WHERE `time` > '.$last_updated.'');
 
     foreach ($unique_ips as $row) {
         $first = $wpdb->get_row('SELECT `time` FROM
@@ -150,12 +155,15 @@ function lbakut_do_user_stats() {
             `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
                 ORDER BY `time` DESC');
         $user_agents = $wpdb->get_results('SELECT DISTINCT `user_agent` FROM
-            `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"', ARRAY_N);
+            `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
+                AND `time` > '.$last_updated.'', ARRAY_N);
         $page_views = $wpdb->get_results('SELECT `script_name`, COUNT(*) as `count`
             FROM `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
+                AND `time` > '.$last_updated.'
                 GROUP BY `script_name`');
         $user_ids = $wpdb->get_results('SELECT `user_id`, COUNT(*) as `count`
             FROM `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
+                AND `time` > '.$last_updated.'
                 GROUP BY `user_id`');
 
         $page_views_array = array();
@@ -170,22 +178,77 @@ function lbakut_do_user_stats() {
 
         $unique_ip_array[$row->ip_address]['first_visit'] = $first->time;
         $unique_ip_array[$row->ip_address]['last_visit'] = $last->time;
-        $unique_ip_array[$row->ip_address]['user_agents'] = serialize(lbakut_array_flatten($user_agents));
-        $unique_ip_array[$row->ip_address]['page_views'] = serialize($page_views_array);
-        $unique_ip_array[$row->ip_address]['user_ids'] = serialize($user_ids_array);
+        $unique_ip_array[$row->ip_address]['user_agents'] = lbakut_array_flatten($user_agents);
+        $unique_ip_array[$row->ip_address]['page_views'] = $page_views_array;
+        $unique_ip_array[$row->ip_address]['user_ids'] = $user_ids_array;
+    }
 
-        foreach ($unique_ip_array as $ip => $row) {
-            $exists = $wpdb->get_var('SELECT `ip` FROM `'.$options['user_stats_table_name'].'`
+    foreach ($unique_ip_array as $ip => $row) {
+        $exists = $wpdb->get_var('SELECT `ip` FROM `'.$options['user_stats_table_name'].'`
                 WHERE `ip`="'.$ip.'"');
-            if ($exists) {
-                $wpdb->update($options['user_stats_table_name'], $row, array('ip' => $ip));
+        if ($exists) {
+            //get the current stats from the database
+            $curr = $wpdb->get_row('SELECT * FROM `'.$options['user_stats_table_name'].'` WHERE `ip`="'.$ip.'"', ARRAY_A);
+            //unserialize any serialized results
+            foreach ($curr as $k => $v) {
+                if (unserialize($curr[$k]) != false) {
+                    $curr[$k] = unserialize($curr[$k]);
+                }
             }
-            else {
-                $unique_ip_array[$ip]['ip'] = $ip;
-                $wpdb->insert($options['user_stats_table_name'], $row);
+            //merge the current stats to the new ones
+            foreach ($row as $k => $v) {
+                if ($k != 'first_visit' && $k != 'last_visit') {
+                    if (is_array($v) && !empty($v)) {
+                        foreach($v as $k2 => $v2) {
+                            $row[$k][$k2] += $curr[$k][$k2];
+                        }
+                    }
+                    else if (!empty($v)) {
+                        $row[$k] = $curr[$k];
+                    }
+                }
             }
+            //reserialize the results
+            foreach ($row as $k => $v) {
+                if (is_array($v)) {
+                    $row[$k] = serialize($v);
+                }
+            }
+            //Update the row
+            $wpdb->update($options['user_stats_table_name'], $row, array('ip' => $ip));
+        }
+        else {
+            $row['ip'] = $ip;
+            foreach ($row as $k => $v) {
+                if (is_array($v)) {
+                    $row[$k] = serialize($v);
+                }
+            }
+            $format = lbakut_get_format_array($row);
+            $wpdb->insert($options['user_stats_table_name'], $row, $format);
         }
     }
+}
+
+function lbakut_get_format_array($array) {
+    $format = array();
+    if (!is_array($array)) {
+        return false;
+    }
+
+    foreach ($array as $v) {
+        if (is_numeric($v)) {
+            $format[] = '%d';
+        }
+        else if (is_float($v)) {
+            $format[] = '%f';
+        }
+        else {
+            $format[] = '%s';
+        }
+    }
+
+    return $format;
 }
 
 function lbakut_get_chart($stat, $title = null, $width = null, $height = null) {

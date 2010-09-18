@@ -168,7 +168,6 @@ function lbakut_activation_setup() {
             'widget_show' => true,
             'widget_ignored_ips' => array(0 => ''),
             'widget_ignored_users' => array(0 => ''),
-            'widget_ignore_admin' => false,
             'widget_show_name' => true,
             'widget_show_ip' => true,
             'widget_show_real_ip' => false,
@@ -217,7 +216,9 @@ function lbakut_activation_setup() {
             'database_delete_schedule' => false,
             'database_delete_threshold' => 60,
             'database_delete_crawlers' => false,
-            'database_delete_last_count' => 0
+            'database_delete_last_count' => 0,
+            'use_time_ago' => true,
+            'time_format' => '%l:%M:%S %P, %a %e %b, %Y'
     );
 
     //BEGIN OPTION INITIALISATION LOOP
@@ -254,8 +255,9 @@ function lbakut_activation_setup() {
     lbakut_update_options($options);
 
     lbakut_cron_jobs('set');
-    lbakut_do_cache_and_stats();
-    lbakut_do_user_stats();
+    if (lbakut_get_stats_last_updated() < 1) {
+        lbakut_do_cache_and_stats();
+    }
 }
 
 /*
@@ -335,9 +337,6 @@ function lbakut_cron_jobs($operation = 'reset') {
         if (($timestamp = wp_next_scheduled( 'lbakut_do_cache_and_stats'))) {
             wp_unschedule_event($timestamp, 'lbakut_do_cache_and_stats');
         }
-        if (($timestamp = wp_next_scheduled( 'lbakut_do_user_stats'))) {
-            wp_unschedule_event($timestamp, 'lbakut_do_user_stats');
-        }
         if (($timestamp = wp_next_scheduled( 'lbakut_database_management_cron'))) {
             wp_unschedule_event($timestamp, 'lbakut_database_management_cron');
         }
@@ -363,12 +362,6 @@ function lbakut_cron_jobs($operation = 'reset') {
             wp_schedule_event( time()+120, $options['stats_update_frequency'],
                     'lbakut_do_cache_and_stats' );
             //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_do_cache_and_stats')).'<br />';
-        }
-        //Add the user stats function to the WP Cron.
-        if (!wp_next_scheduled('lbakut_do_user_stats')) {
-            wp_schedule_event( time()+240, $options['stats_update_frequency'],
-                    'lbakut_do_user_stats' );
-            //echo strftime('%e %b %Y, %H:%M:%S', wp_next_scheduled('lbakut_do_user_stats')).'<br />';
         }
         //Add the database deleting schedule to the WP Cron.
         if (!wp_next_scheduled('lbakut_database_management_cron')) {
@@ -409,12 +402,21 @@ function lbakut_database_management_cron() {
  * Functions to get, delete and update the lbakut options.
 */
 function lbakut_get_options() {
-    return get_option('lbakut_options');
+    global $lbakut_options;
+    if (!isset($lbakut_options)) {
+        $lbakut_options = get_option('lbakut_options');
+    }
+    return $lbakut_options;
 }
 function lbakut_update_options($options) {
-    return update_option('lbakut_options', $options);
+    global $lbakut_options;
+    update_option('lbakut_options', $options);
+    $lbakut_options = $options;
+    return $lbakut_options;
 }
 function lbakut_delete_options() {
+    global $lbakut_options;
+    unset($lbakut_options);
     return delete_option('lbakut_options');
 }
 
