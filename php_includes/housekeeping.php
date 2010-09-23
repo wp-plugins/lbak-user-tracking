@@ -11,14 +11,15 @@ function lbakut_activation_setup() {
     //Check for current options.
     $cur_options = lbakut_get_options();
 
+    //CALL UPGRADE FUNCTION HERE IF NEEDED
+
+    lbakut_upgrade_fix('1.7', 'lbakut_stats_format_fix');
+
+    //END UPGRADE FUNCTION CALLS
+
 
     //If the plugin is already installed.
-    if ($cur_options) {
-        $options_exist = true;
-    }
-    else {
-        $options_exist = false;
-    }
+    $options_exist = $cur_options ? true : false;
 
     //Declare table names.
     $main_table_name = $wpdb->prefix . "lbakut_activity_log";
@@ -142,15 +143,6 @@ function lbakut_activation_setup() {
         );
             ";
 
-    //ONE TIME FIX TO BE REMOVED AFTER THE NEXT RELEASE
-    $count = 2;
-    while ($count < 20) {
-        $wpdb->query('DROP INDEX `ip_'.$count.'` ON
-            `'.$user_stats_table_name.'`');
-        $count++;
-    }
-
-
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     if (function_exists('dbDelta')) {
         dbDelta($create_table_sql);
@@ -218,7 +210,8 @@ function lbakut_activation_setup() {
             'database_delete_crawlers' => false,
             'database_delete_last_count' => 0,
             'use_time_ago' => true,
-            'time_format' => '%l:%M:%S %P, %a %e %b, %Y'
+            'time_format' => '%l:%M:%S %P, %a %e %b, %Y',
+            'log' => true
     );
 
     //BEGIN OPTION INITIALISATION LOOP
@@ -254,10 +247,20 @@ function lbakut_activation_setup() {
     add_option('lbakut_options', null, null, 'no');
     lbakut_update_options($options);
 
+    //Set the lbakut cron jobs
     lbakut_cron_jobs('set');
+
+    //If no stats or cache exist, create them.
     if (lbakut_get_stats_last_updated() < 1) {
         lbakut_do_cache_and_stats();
+        lbakut_log('Activation stats function call run.', __FILE__.':'.__LINE__);
     }
+
+    lbakut_log('Plugin activated.');
+}
+
+function lbakut_deactivate() {
+    lbakut_log('Plugin deactivated.');
 }
 
 /*
@@ -276,6 +279,10 @@ function lbakut_uninstall() {
 
         //Erase options field in the settings table.
         lbakut_delete_options();
+        lbakut_log('Plugin deleted, data deleted.');
+    }
+    else {
+        lbakut_log('Plugin uninstalled without deleting data.');
     }
 
     //Remove the WP Cron jobs.

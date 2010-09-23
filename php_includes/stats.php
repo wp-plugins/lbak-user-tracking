@@ -2,6 +2,8 @@
 function lbakut_do_cache_and_stats() {
     //Run the user stats function first
     lbakut_do_user_stats();
+    //REMOVE THIS IN PRODUCTION
+    return;
     set_time_limit(0);
     ignore_user_abort(true);
     global $wpdb;
@@ -133,14 +135,27 @@ function lbakut_get_browscap_from_cache($user_agent, $options = null) {
     }
 }
 
-function lbakut_do_user_stats() {
+/*
+ * This function populates the user stats table with information about the
+ * habits of each unique IP address. By default, it will only use records
+ * that were created since the last update but you can make it do a full
+ * scan (from the start) by passing true as the first argument.
+ */
+function lbakut_do_user_stats($from_start = false) {
     set_time_limit(0);
     ignore_user_abort(true);
     global $wpdb;
     $options = lbakut_get_options();
     $unique_ip_array = array();
     $page_views_array = array();
-    $last_updated = intval(lbakut_get_stats_last_updated());
+
+    if ($from_start == true) {
+        $last_updated = 0;
+    }
+    else {
+        $last_updated = intval(lbakut_get_stats_last_updated());
+    }
+    
     //$wpdb->show_errors();
 
     $unique_ips = $wpdb->get_results('SELECT DISTINCT `ip_address`
@@ -154,9 +169,10 @@ function lbakut_do_user_stats() {
         $last = $wpdb->get_row('SELECT `time` FROM
             `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
                 ORDER BY `time` DESC');
-        $user_agents = $wpdb->get_results('SELECT DISTINCT `user_agent` FROM
+        $user_agents = $wpdb->get_results('SELECT `user_agent`, COUNT(*) as `count` FROM
             `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
-                AND `time` > '.$last_updated.'', ARRAY_N);
+                AND `time` > '.$last_updated.'
+                    GROUP BY `user_agent`');
         $page_views = $wpdb->get_results('SELECT `script_name`, COUNT(*) as `count`
             FROM `'.$options['main_table_name'].'` WHERE `ip_address`="'.$row->ip_address.'"
                 AND `time` > '.$last_updated.'
@@ -166,19 +182,30 @@ function lbakut_do_user_stats() {
                 AND `time` > '.$last_updated.'
                 GROUP BY `user_id`');
 
+        /*
+         * Format each of the above arrays to that their keys are the page
+         * or browser name or whatever and the value is the number of clicks
+         * for each record.
+         */
+
         $page_views_array = array();
         foreach ($page_views as $r) {
             $page_views_array[$r->script_name] = intval($r->count);
         }
 
         $user_ids_array = array();
-        foreach ($user_ids as $t) {
-            $user_ids_array[$t->user_id] = intval($t->count);
+        foreach ($user_ids as $r) {
+            $user_ids_array[$r->user_id] = intval($r->count);
         }
 
+        $user_agents_array = array();
+        foreach ($user_agents as $r) {
+            $user_agents_array[$r->user_agent] = intval($r->count);
+        }
+        
         $unique_ip_array[$row->ip_address]['first_visit'] = $first->time;
         $unique_ip_array[$row->ip_address]['last_visit'] = $last->time;
-        $unique_ip_array[$row->ip_address]['user_agents'] = lbakut_array_flatten($user_agents);
+        $unique_ip_array[$row->ip_address]['user_agents'] = $user_agents_array;
         $unique_ip_array[$row->ip_address]['page_views'] = $page_views_array;
         $unique_ip_array[$row->ip_address]['user_ids'] = $user_ids_array;
     }
@@ -197,13 +224,23 @@ function lbakut_do_user_stats() {
             }
             //merge the current stats to the new ones
             foreach ($row as $k => $v) {
+                //Ignore merging the first and last visit
                 if ($k != 'first_visit' && $k != 'last_visit') {
-                    if (is_array($v) && !empty($v)) {
+                    //If the current value is an array, continue
+                    if (is_array($v)) {
+                        //Unwrap the second level array.
                         foreach($v as $k2 => $v2) {
-                            $row[$k][$k2] += $curr[$k][$k2];
+                            //If the stat is set, add to it, else set it.
+                            if (isset($row[$k][$k2])) {
+                                $row[$k][$k2] += $curr[$k][$k2];
+                            }
+                            else {
+                                $row[$k][$k2] = $curr[$k][$k2];
+                            }
                         }
                     }
-                    else if (!empty($v)) {
+                    //If the value is not an array and isn't empty.
+                    else if (!is_array($v) && !empty($v)) {
                         $row[$k] = $curr[$k];
                     }
                 }

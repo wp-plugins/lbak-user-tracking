@@ -133,6 +133,10 @@ function lbakut_time_format($time, $options = null) {
  * A 'time ago' function. Displays how long ago a unix timestamp occured in
  * relation to time() (now). If it was over a week ago, the function just
  * returns the time and date formatted by lbakut_time_format().
+ *
+ * This also handles the user's settings. If they opt not to use the time ago
+ * format, this function will react appropriately and format the time using
+ * the user specified time string.
 */
 function lbakut_time_ago_format($time, $options = null) {
     $temp = time() - $time;
@@ -169,6 +173,7 @@ function lbakut_time_ago_format($time, $options = null) {
  * format.
 */
 function lbakut_option_translate($k) {
+    //Remove the option name prefix.
     $k = preg_replace('/(widget_show_|track_|search_show_)/i', '', $k);
     switch($k) {
 
@@ -757,6 +762,10 @@ function lbakut_get_browser_tooltip($browscap, $brows = null, $options = null) {
     return $return;
 }
 
+/*
+ * Prints either a yes in green or a no in red depending on the boolean you
+ * pass to it.
+ */
 function lbakut_yes_no($bool) {
     if ($bool == true) {
         return '<span style=\'color: #aaffaa;\'>Yes</span>';
@@ -781,7 +790,7 @@ function lbakut_get_ip_tooltip($ip, $options = null, $brows = null) {
     if ($lbakut_ip_tooltip_cache[$ip]) {
         return $lbakut_ip_tooltip_cache[$ip];
     }
-
+    
     $row = $wpdb->get_row('SELECT * FROM `'.$options['user_stats_table_name'].'` WHERE `ip`="'.$wpdb->escape($ip).'"');
     if ($row != false) {
         $return .= '<b>First visit:</b> '.lbakut_time_ago_format($row->first_visit).'<br />';
@@ -810,8 +819,11 @@ function lbakut_get_ip_tooltip($ip, $options = null, $brows = null) {
         $user_agents = unserialize($row->user_agents);
         if ($user_agents) {
             $return .= '<b>Browsers</b><br />';
-            foreach ($user_agents as $user_agent) {
-                $browscap = lbakut_browser_info($user_agent, $brows);
+            foreach ($user_agents as $user_agent => $count) {
+                if ($user_agent) {
+                    $browscap = lbakut_browser_info($user_agent, $brows);
+                }
+                
                 if ($browscap) {
                     $return .= $browscap['parent'].'<br />';
                 }
