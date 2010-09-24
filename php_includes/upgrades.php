@@ -55,7 +55,7 @@ function lbakut_stats_format_fix() {
     
     //Execute the user stats function. Cache function not required.
     lbakut_do_user_stats(true);
-    lbakut_log('Successfully run the 1.7 stats update fix script.', null, true);
+    lbakut_log('Successfully run the 1.7.2 stats update fix script.', null, true);
     return true;
 }
 
