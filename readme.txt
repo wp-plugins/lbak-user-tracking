@@ -4,9 +4,9 @@ Author: Sam Rose
 Author URL: http://lbak.co.uk/
 Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
-Requires at least: 3.0.1
+Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.6
+Stable tag: 1.7
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -66,6 +66,11 @@ violated by you (which requires manual editing of the code, there is no other
 way) then it is possible that you will be banned from accessing his website.
 
 == Changelog ==
+
+= 1.7 =
+
+* Fixed some issues with stats logging caused by recent changes.
+* Added a new stats and error logging function to help me improve the plugin.
 
 = 1.6 =
 

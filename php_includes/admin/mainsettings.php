@@ -62,10 +62,17 @@ else if ($_POST['search_submit'] == 'Submit') {
 }
 else if ($_POST['general_submit'] == 'Submit') {
     check_admin_referer('lbakut_nonce');
+    if ($options['log'] == true && $_POST['log'] == false) {
+        lbakut_log('Logging diabled.');
+    }
+    else if ($options['log'] == false && $_POST['log'] == true) {
+        lbakut_log('Logging enabed.', null, true);
+    }
     $options['delete_on_uninstall'] = $wpdb->escape($_POST['delete_on_uninstall']);
     $options['track_ignore_admin'] = $wpdb->escape($_POST['track_ignore_admin']);
     $options['use_time_ago'] = $wpdb->escape($_POST['use_time_ago']);
     $options['time_format'] = $wpdb->escape($_POST['time_format']);
+    $options['log'] = $wpdb->escape($_POST['log']);
     lbakut_update_options($options);
     $updated = '<div class="updated">General Options Updated!</div>';
 }
@@ -133,6 +140,8 @@ if ($options['widget_ignored_users'] == '') {
                             <b><?php _e('Delete data on uninstall?', 'lbakut'); ?></b>
                         </td>
                         <td>
+                            <input type="hidden" name="delete_on_uninstall"
+                                   value="0" />
                             <input type="checkbox" id="delete_on_uninstall"
                                    name="delete_on_uninstall" value="1" <?php echo $delete_on_uninstall_checked; ?> />
                         </td>
@@ -143,6 +152,28 @@ if ($options['widget_ignored_users'] == '') {
                                 this plugin. This means that you will lose all of the
                                 information you have collected while using this plugin.
                                 You will also lose all of your preferences.', 'lbakut'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b><?php _e('Send usage data?', 'lbakut'); ?></b>
+                        </td>
+                        <td>
+                            <input type="hidden" name="log"
+                                   value="0" />
+                            <input type="checkbox"
+                                   name="log" value="1" <?php echo $options['log'] ? 'checked' : ''; ?> />
+                        </td>
+                        <td>
+                            <p>
+                                <?php _e('If this is checked you will be opted
+                                    in to sending usage statistics and error
+                                    reports to the LBAK server for the developers
+                                    to use to help improve this plugin. If it
+                                    is not checked, you will not send data to
+                                    our servers. For more information on this,
+                                    please see the FAQ.', 'lbakut'); ?>
                             </p>
                         </td>
                     </tr>
