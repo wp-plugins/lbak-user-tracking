@@ -2,8 +2,6 @@
 function lbakut_do_cache_and_stats() {
     //Run the user stats function first
     lbakut_do_user_stats();
-    //REMOVE THIS IN PRODUCTION
-    return;
     set_time_limit(0);
     ignore_user_abort(true);
     global $wpdb;
