@@ -48,16 +48,10 @@ function lbakut_upgrade_fix($version, $callback) {
 function lbakut_stats_format_fix() {
     global $wpdb;
     $options = lbakut_get_options();
-
-    //If the options can't found, return false. No options indicates no plugin.
-    if (!$options) {
-        return false;
-    }
+    $wpdb->show_errors();
 
     //Empty the stats table. Regrettable but necessary. Return false on failure.
-    if (!$wpdb->query('TRUNCATE TABLE `'.$options['user_stats_table'].'`')) {
-        return false;
-    }
+    $wpdb->query('TRUNCATE TABLE `'.$options['user_stats_table_name'].'`');
     
     //Execute the user stats function. Cache function not required.
     lbakut_do_user_stats(true);
