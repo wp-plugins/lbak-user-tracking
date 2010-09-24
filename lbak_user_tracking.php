@@ -38,7 +38,7 @@ function lbakut_get_base_dir() {
  * on it for running upgrade scripts where necessary.
  */
 function lbakut_get_version() {
-    return '1.7';
+    return '1.7.1';
 }
 
 // i18n (internationalisation)

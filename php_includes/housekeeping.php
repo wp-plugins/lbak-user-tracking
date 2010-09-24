@@ -13,7 +13,7 @@ function lbakut_activation_setup() {
 
     //CALL UPGRADE FUNCTION HERE IF NEEDED
 
-    lbakut_upgrade_fix('1.7', 'lbakut_stats_format_fix');
+    lbakut_upgrade_fix('1.7.1', 'lbakut_stats_format_fix');
 
     //END UPGRADE FUNCTION CALLS
 
