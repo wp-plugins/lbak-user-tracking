@@ -64,7 +64,7 @@ else if ($_GET['removewidget']) {
                     page clicks on your blog. It does not
                     take into account crawlers (search engine spiders etc.)', 'lbakut'); ?>
                 <br />
-                            <?php echo '<img src="'.lbakut_get_chart('`script_name_array`', 'Page Visits Breakdown').'" />'; ?>
+                            <?php echo '<img src="'.lbakut_get_chart('`page_array`', 'Page Visits Breakdown').'" />'; ?>
                 <br />
                 <h2 style="margin: 0; display: inline;">OS Breakdown</h2>
                             <?php

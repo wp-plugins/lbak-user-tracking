@@ -11,6 +11,7 @@ function lbakut_do_cache_and_stats() {
     $browser_array = array();
     $platform_array = array();
     $script_name_array = array();
+    $page_array = array();
     $recognised = 0;
 
     //$wpdb->show_errors();
@@ -50,16 +51,22 @@ function lbakut_do_cache_and_stats() {
     $no_of['rows'] = $wpdb->get_var('SELECT COUNT(`id`)
         FROM `'.$options['main_table_name'].'`');
 
-    $rows = $wpdb->get_results('SELECT `id`, `user_agent`, `script_name`
+    $rows = $wpdb->get_results('SELECT `id`, `user_agent`, `script_name`, `page`
         FROM `'.$options['main_table_name'].'`');
     foreach ($rows as $row) {
         $browscap = lbakut_browser_info($row->user_agent, $brows);
 
-        if (!$browscap['crawler']) {
+        if (!$browscap['crawler'] && $row->script_name) {
             if(!isset($script_name_array[$row->script_name])) {
                 $script_name_array[$row->script_name] = 0;
             }
             $script_name_array[$row->script_name]++;
+        }
+        if (!$browscap['crawler'] && $row->page) {
+            if(!isset($page_array[$row->page])) {
+                $page_array[$row->page] = 0;
+            }
+            $page_array[$row->page]++;
         }
 
         if ($browscap) {
@@ -95,6 +102,7 @@ function lbakut_do_cache_and_stats() {
     $no_of['browser_array'] = serialize($browser_array);
     $no_of['platform_array'] = serialize($platform_array);
     $no_of['script_name_array'] = serialize($script_name_array);
+    $no_of['page_array'] = serialize($page_array);
     $no_of['time'] = time();
     $no_of['tables_'] = $no_of['tables'];
     $no_of['recognised'] = $recognised;
@@ -307,7 +315,7 @@ function lbakut_get_chart($stat, $title = null, $width = null, $height = null) {
     foreach ($script_names as $k => $v) {
         $percent = lbakut_percent($v, $outof);
         $chd .= $percent.',';
-        $chdl .= $k.' ('.$percent.'%)|';
+        $chdl .= urlencode($k).' ('.$percent.'%)|';
     }
     $chd = rtrim($chd, ',');
     $chdl = rtrim($chdl, '|');

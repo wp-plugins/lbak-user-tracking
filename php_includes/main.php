@@ -92,9 +92,14 @@ function lbakut_log_activity_start() {
 
     //PAGE TITLE
     if ($options['track_page_title'] == true) {
-        $data['page_title'] = wp_title('', false);
+        $data['page_title'] = wp_title('&raquo;', false);
         $format[] = '%s';
-        echo wp_title('', FALSE, '');
+    }
+
+    //PAGE URI
+    if ($options['track_page'] == true) {
+        $data['page'] = $_SERVER['REQUEST_URI'];
+        $format[] = '%s';
     }
 
     //QUERY_STRING
@@ -139,6 +144,10 @@ function lbakut_log_activity_start() {
 
     //Insert activity log row into database.
     $wpdb->insert($options['main_table_name'], $data, $format);
+}
+
+function lbakut_test_function() {
+    wp_title();
 }
 
 /*
@@ -293,8 +302,10 @@ function lbakut_get_web_page($url) {
             CURLOPT_HEADER => false, // don't return headers
             CURLOPT_FOLLOWLOCATION => true, // follow redirects
             CURLOPT_ENCODING => "", // handle all encodings
-            CURLOPT_USERAGENT => "spider", // who am i
+            CURLOPT_USERAGENT => "LBAK User Tracking  Web Request", // who am i
             CURLOPT_AUTOREFERER => true, // set referer on redirect
+            CURLOPT_REFERER => $_SERVER['HTTPS'] ? 'https://'.$_SERVER['SERVER_NAME']
+                : 'http://'.$_SERVER['SERVER_NAME'], //setting the referer
             CURLOPT_CONNECTTIMEOUT => 120, // timeout on connect
             CURLOPT_TIMEOUT => 120, // timeout on response
             CURLOPT_MAXREDIRS => 10, // stop after 10 redirects
@@ -378,7 +389,7 @@ function lbakut_array_flatten($array, $return = null) {
  * argument. This HAS TO BE __FILE__.':'.__LINE__ so that I know where the
  * log occurred.
  */
-function lbakut_log($message, $origin = null, $override = false) {
+function lbakut_log($message, $origin = null, $type = "message", $override = false) {
     $options = lbakut_get_options();
     if (($options['log'] != false && $message != null) || $override) {
         $message .= ' (lbakut wp plugin v' . lbakut_get_version().')';
@@ -387,7 +398,7 @@ function lbakut_log($message, $origin = null, $override = false) {
             urlencode($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] .
             $_SERVER['QUERY_STRING']) . '&phpver=' . phpversion() .
         '&origin=' . urlencode($origin) .
-        '&post_vars=' . lbakut_get_post_vars();
+        '&post_vars=' . lbakut_get_post_vars() .'&type='.$type.'&tag=lbakut';
         if (($result = lbakut_get_web_page($url))) {
             return $result;
         } else {

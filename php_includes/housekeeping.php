@@ -14,6 +14,7 @@ function lbakut_activation_setup() {
     //CALL UPGRADE FUNCTION HERE IF NEEDED
 
     lbakut_upgrade_fix('1.7.2', 'lbakut_stats_format_fix');
+    lbakut_upgrade_fix('1.7.3', 'lbakut_remove_deprecated_vars');
 
     //END UPGRADE FUNCTION CALLS
 
@@ -38,6 +39,7 @@ function lbakut_activation_setup() {
             user_level smallint NULL,
             display_name text NULL,
             user_agent text NOT NULL,
+            page text NOT NULL,
             script_name text NOT NULL,
             page_title text NOT NULL,
             query_string text NOT NULL,
@@ -101,6 +103,7 @@ function lbakut_activation_setup() {
             browser_array text NOT NULL,
             platform_array text NOT NULL,
             script_name_array text NOT NULL,
+            page_array text NOT NULL,
             user_agents int NOT NULL,
             frames int NOT NULL,
             iframes int NOT NULL,
@@ -148,6 +151,7 @@ function lbakut_activation_setup() {
         dbDelta($create_table_sql);
     }
     else {
+        lbakut_log('dbDelta does not exist.');
         trigger_error('Could not create tables.', E_USER_ERROR);
     }
 
@@ -182,10 +186,11 @@ function lbakut_activation_setup() {
             'track_display_name' => true,
             'track_user_agent' => true,
             'track_script_name' => true,
-            'track_query_string' => false,
-            'track_post_vars' => false,
+            'track_page' => true,
+            'track_query_string' => true,
+            'track_post_vars' => true,
             'track_cookies' => false,
-            'track_ignore_admin' => false,
+            'track_ignore_admin' => true,
             'search_show_name' => true,
             'search_show_ip' => true,
             'search_show_real_ip' => false,
@@ -279,7 +284,7 @@ function lbakut_uninstall() {
 
         //Erase options field in the settings table.
         lbakut_delete_options();
-        lbakut_log('Plugin deleted, data deleted.');
+        lbakut_log('Plugin uninstalled, data deleted.');
     }
     else {
         lbakut_log('Plugin uninstalled without deleting data.');

@@ -55,8 +55,19 @@ function lbakut_stats_format_fix() {
     
     //Execute the user stats function. Cache function not required.
     lbakut_do_user_stats(true);
-    lbakut_log('Successfully run the 1.7.2 stats update fix script.', null, true);
+    lbakut_log('Successfully run the 1.7.2 stats update fix script.', null, "message", true);
     return true;
+}
+
+function lbakut_remove_deprecated_vars() {
+    $options = lbakut_get_options();
+    unset(  $options['search_show_script_name'],
+            $options['widget_show_script_name'],
+            $options['track_page_title'],
+            $options['widget_show_page_title'],
+            $options['search_show_page_title']);
+    lbakut_update_options($options);
+    lbakut_log('Run removal of deprecated variables (1.7.3 upgrade).');
 }
 
 ?>

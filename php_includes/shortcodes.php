@@ -41,7 +41,7 @@ function lbakut_parse_shortcode($the_content) {
                     $title = $args['title'] ? $args['title'] : null;
                     $width = $args['width'] ? $args['width'] : null;
                     $height = $args['height'] ? $args['height'] : null;
-                    //Create image tag.
+                    //Create image tag.script_name
                     $replace = '<img src="'.lbakut_get_chart(lbakut_chart_type($args['type']), $title, $width, $height).'" />';
                     //Replace the content with the appropriate code.
                     $the_content = preg_replace($regex_pattern, $replace, $the_content, 1);
@@ -58,7 +58,7 @@ function lbakut_chart_type($type) {
     switch ($type) {
         case 'browser': return '`browser_array`';
             break;
-        case 'pageviews': return '`script_name_array`';
+        case 'pageviews': return '`page_array`';
             break;
         case 'os': return '`platform_array`';
             break;

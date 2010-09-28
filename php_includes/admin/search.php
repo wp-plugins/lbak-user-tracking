@@ -80,15 +80,15 @@
                     </tr>
                     <tr>
                         <td>
-                            <label for="script_name">
+                            <label for="page_name">
                                 <?php echo __('Page', 'lbakut'); ?>
                             </label>
                         </td>
                         <td>
-                            <?php echo lbakut_is_isnt_box('script_name_is'); ?>
-                            <input type="text" name="script_name"
-                                   id="script_name"
-                                   value="<?php echo $_GET['script_name']; ?>"/>
+                            <?php echo lbakut_is_isnt_box('page_name_is'); ?>
+                            <input type="text" name="page_name"
+                                   id="page_name"
+                                   value="<?php echo $_GET['page_name']; ?>"/>
                         </td>
                     </tr>
                     <tr>
@@ -146,7 +146,7 @@
             $user_level = lbakut_search_var_prepare('user_level', 'int');
             $ip_address = lbakut_search_var_prepare('ip_address', 'string');
             $real_ip_address = lbakut_search_var_prepare('real_ip_address', 'string');
-            $script_name = lbakut_search_var_prepare('script_name', 'string');
+            $page_name = lbakut_search_var_prepare('page_name', 'string');
 
             $query = "
                                 WHERE 1
@@ -156,7 +156,7 @@
                     $user_level
                     $ip_address
                     $real_ip_address
-                    $script_name";
+                    $page_name";
 
             //AN EXPLAIN SELECT QUERY FOR INDEX TESTING.
             /*

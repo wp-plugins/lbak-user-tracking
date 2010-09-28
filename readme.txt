@@ -6,7 +6,7 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -66,6 +66,15 @@ violated by you (which requires manual editing of the code, there is no other
 way) then it is possible that you will be banned from accessing his website.
 
 == Changelog ==
+
+= 1.7.3 =
+
+* Fixed a pretty large bug that stopped pages with "pretty" links from being
+logged properly. As a result, the way pages have been logged have been changed
+and this will reflect on your page views stats but they should be back up to
+scratch in no time :)
+* Fixed a security bug in the dashboard widget, thanks to cyberczar in the
+thread http://wordpress.org/support/topic/plugin-lbak-user-tracking-exposure-of-admin-credentials.
 
 = 1.7.2 =
 
