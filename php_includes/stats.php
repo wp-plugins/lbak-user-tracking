@@ -296,7 +296,9 @@ function lbakut_get_format_array($array) {
 
 function lbakut_get_chart($stat, $title = null, $width = null, $height = null) {
     $row = lbakut_get_latest_stats($stat, ARRAY_N);
-
+    if (!$row) {
+        return false;
+    }
     if ($title == null) {
         $title = '';
     }
