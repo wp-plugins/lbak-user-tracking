@@ -48,7 +48,6 @@ function lbakut_upgrade_fix($version, $callback) {
 function lbakut_stats_format_fix() {
     global $wpdb;
     $options = lbakut_get_options();
-    $wpdb->show_errors();
 
     //Empty the stats table. Regrettable but necessary. Return false on failure.
     $wpdb->query('TRUNCATE TABLE `'.$options['user_stats_table_name'].'`');
@@ -68,6 +67,16 @@ function lbakut_remove_deprecated_vars() {
             $options['search_show_page_title']);
     lbakut_update_options($options);
     lbakut_log('Run removal of deprecated variables (1.7.3 upgrade).');
+}
+
+function lbakut_alter_user_agent_index() {
+    global $wpdb;
+    $options = lbakut_get_options();
+
+    $wpdb->query("ALTER TABLE ".$options['browscache_table_name']." DROP INDEX user_agent");
+    $wpdb->query("ALTER TABLE ".$options['browscache_table_name']." ADD INDEX user_agent (user_agent(196))");
+
+    lbakut_log('Run the 1.7.5 index alteration fix.');
 }
 
 ?>

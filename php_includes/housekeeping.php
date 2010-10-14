@@ -15,6 +15,7 @@ function lbakut_activation_setup() {
 
     lbakut_upgrade_fix('1.7.2', 'lbakut_stats_format_fix');
     lbakut_upgrade_fix('1.7.3', 'lbakut_remove_deprecated_vars');
+    lbakut_upgrade_fix('1.7.5', 'lbakut_alter_user_agent_index');
 
     //END UPGRADE FUNCTION CALLS
 
@@ -88,7 +89,7 @@ function lbakut_activation_setup() {
             aol tinyint(1) NOT NULL,
             aolversion text NOT NULL,
             PRIMARY KEY (id),
-            UNIQUE KEY user_agent (user_agent(128)),
+            UNIQUE KEY user_agent (user_agent(196)),
             KEY crawler (crawler),
             KEY issyndicationreader (issyndicationreader)
         );
@@ -100,6 +101,7 @@ function lbakut_activation_setup() {
             rows int NOT NULL,
             unique_ips int NOT NULL,
             recognised int NOT NULL,
+            human int NOT NULL,
             browser_array text NOT NULL,
             platform_array text NOT NULL,
             script_name_array text NOT NULL,

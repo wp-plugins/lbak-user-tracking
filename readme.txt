@@ -6,7 +6,7 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -66,6 +66,15 @@ violated by you (which requires manual editing of the code, there is no other
 way) then it is possible that you will be banned from accessing his website.
 
 == Changelog ==
+
+= 1.7.5 =
+
+* Fixed a bug that created massive amounts of errors due to attempting to
+duplicate entries in the browser cache database table.
+* Fixed the page visits pie chart to match the recent changes to how page
+names are logged.
+* Changed the pie charts to only display the top 15 and categorise the rest
+as "other". This is necessary due to a URI limit on the Google Charts API.
 
 = 1.7.4 =
 

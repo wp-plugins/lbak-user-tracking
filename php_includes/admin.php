@@ -61,6 +61,10 @@ function lbakut_menu_options() {
                 require_once 'admin/log.php';
                 break;
 
+            case 'test':
+                require_once 'admin/test.php';
+                break;
+
             default:
                 break;
         }
