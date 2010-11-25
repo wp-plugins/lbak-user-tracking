@@ -73,6 +73,7 @@ function lbakut_pageviews_widget() {
 function lbakut_admin_menu() {
     $page = add_submenu_page('tools.php', 'LBAK User Tracking Options',
                     'User Tracking', 'manage_options', 'lbakut', 'lbakut_menu_options');
+    add_action('admin_print_scripts-'.$page, 'lbakut_add_scripts');
 }
 
 /*

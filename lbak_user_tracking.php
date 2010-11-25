@@ -75,7 +75,7 @@ add_action('wp_loaded', 'lbakut_log_activity_start');
 add_action('admin_menu', 'lbakut_admin_menu');
 add_action('admin_head', 'lbakut_add_admin_header');
 add_filter('the_content', 'lbakut_parse_shortcode');
-add_action('admin_print_scripts', 'lbakut_add_scripts');
+add_action('admin_print_scripts-index.php', 'lbakut_add_scripts');
 
 /*
  * Activation and uninstallation actions. The plugin upgrade script is

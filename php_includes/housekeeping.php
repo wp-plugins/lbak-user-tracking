@@ -301,10 +301,11 @@ function lbakut_uninstall() {
  * scripts or styles to this.
 */
 function lbakut_add_scripts() {
-    wp_enqueue_script('jquery');
-    wp_enqueue_script('lbakut_admin_script', lbakut_get_base_url().'/js_includes/admin_page.js?v='.filectime(lbakut_get_base_dir().'/js_includes/admin_page.js'));
-    wp_enqueue_script('jquery-tooltip', 'http://cdn.jquerytools.org/1.2.4/jquery.tools.min.js');
 
+    wp_enqueue_script('jquery-tooltip', 'http://cdn.jquerytools.org/1.2.4/jquery.tools.min.js', array('jquery'));
+    wp_enqueue_script('lbakut_admin_script', 
+            lbakut_get_base_url().'/js_includes/admin_page.js?v='.filectime(lbakut_get_base_dir().'/js_includes/admin_page.js'),
+            array('jquery-tooltip'));
 }
 
 /*
