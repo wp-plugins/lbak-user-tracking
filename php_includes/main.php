@@ -312,7 +312,17 @@ function lbakut_get_web_page($url) {
         );
 
         $ch = curl_init($url);
-        curl_setopt_array($ch, $options);
+        
+        // fix for people who are still running old versions of PHP
+        if (function_exists('curl_setopt_array')) {
+            curl_setopt_array($ch, $options);
+        }
+        else {
+            foreach($options as $option => $value) {
+                curl_setopt($ch, $option, $value);
+            }
+        }
+
         $content = curl_exec($ch);
         $err = curl_errno($ch);
         $errmsg = curl_error($ch);

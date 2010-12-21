@@ -263,11 +263,11 @@ function lbakut_activation_setup() {
         lbakut_log('Activation stats function call run.', __FILE__.':'.__LINE__);
     }
 
-    lbakut_log('Plugin activated.');
+    //lbakut_log('Plugin activated.');
 }
 
 function lbakut_deactivate() {
-    lbakut_log('Plugin deactivated.');
+    //lbakut_log('Plugin deactivated.');
 }
 
 /*

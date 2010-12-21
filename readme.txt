@@ -6,7 +6,7 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.7.6
+Stable tag: 1.7.7
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -66,6 +66,11 @@ violated by you (which requires manual editing of the code, there is no other
 way) then it is possible that you will be banned from accessing his website.
 
 == Changelog ==
+
+= 1.7.7 =
+
+* Fixed a bug with curl_setopt_array not existing on servers running older
+version of PHP.
 
 = 1.7.6 =
 
