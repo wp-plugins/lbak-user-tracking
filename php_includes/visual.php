@@ -224,7 +224,7 @@ function lbakut_option_translate($k) {
             break;
         case 'post': $return = 'POST vars';
             break;
-        case 'ignore_admin': $return = '<b>Ignore Admin?</b>';
+        case 'ignore_admin': $return = '<b>Ignore Admin</b>';
             break;
 
         //DEFAULT

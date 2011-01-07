@@ -194,7 +194,7 @@ if ($options['widget_ignored_users'] == '') {
                     </tr>
                     <tr>
                         <td>
-                            <?php _e('<b>Use "time ago" format?"', 'lbakut'); ?>
+                            <?php _e('<b>Use "time ago" format?"</b>', 'lbakut'); ?>
                         </td>
                         <td>
                             <input type="hidden" name="use_time_ago" value="0" />

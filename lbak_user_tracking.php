@@ -4,7 +4,7 @@
     Plugin URI: http://wordpress.org/extend/plugins/lbak-user-tracking/
     Description: An extensive user tracking plugin.
     Author: Sam Rose
-    Version: 1.7.7
+    Version: 1.7.8
     Author URI: http://lbak.co.uk/
 */
 
@@ -25,11 +25,15 @@
  * directory and URL from any file you want. It is necesary for them to be in
  * this file (or another php file in this directory).
  */
-function lbakut_get_base_url() {
-    return WP_PLUGIN_URL. '/'. basename(dirname(__FILE__));
+if (!function_exists('lbakut_get_base_url')) {
+    function lbakut_get_base_url() {
+        return WP_PLUGIN_URL. '/'. basename(dirname(__FILE__));
+    }
 }
-function lbakut_get_base_dir() {
-    return WP_PLUGIN_DIR. '/'. basename(dirname(__FILE__));
+if (!function_exists('lbakut_get_base_dir')) {
+    function lbakut_get_base_dir() {
+        return WP_PLUGIN_DIR. '/'. basename(dirname(__FILE__));
+    }
 }
 
 /*
@@ -38,7 +42,7 @@ function lbakut_get_base_dir() {
  * on it for running upgrade scripts where necessary.
  */
 function lbakut_get_version() {
-    return '1.7.7';
+    return '1.7.8';
 }
 
 // i18n (internationalisation)
