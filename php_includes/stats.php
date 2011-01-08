@@ -1,5 +1,23 @@
 <?php
 
+function lbakut_get_users_since($days = 7, $array = false) {
+    global $wpdb;
+    $options = lbakut_get_options();
+
+    $seconds = intval($days) * 60 * 60 * 24;
+
+    if ($array) {
+        return $wpdb->get_results('SELECT `user_id`, `display_name`, COUNT(*) as `count` FROM `'.
+                $options['main_table_name'].'` WHERE `time` > '.
+                (time() - $seconds).' GROUP BY `user_id`', ARRAY_A);
+    }
+    else {
+        return $wpdb->get_results('SELECT `user_id`, `display_name`, COUNT(*) as `count` FROM `'.
+                $options['main_table_name'].'` WHERE `time` > '.
+                (time() - $seconds).' GROUP BY `user_id`');
+    }
+}
+
 function lbakut_do_cache_and_stats() {
     //Run the user stats function first
     lbakut_do_user_stats();
