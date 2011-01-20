@@ -25,9 +25,11 @@ function lbakut_log_activity_start() {
 
     //Ignore the wp-cron.php, index-extra.php and admin-ajax.php files.
     //They are ignored because they get pretty spammy and don't tell us much...
-    if ($filename == "wp-cron.php" ||
-            $filename == "admin-ajax.php" ||
-            $filename == "index-extra.php") {
+    //Also ignoring wordpress-file-monitor.php as of 1.7.10 due to user request.
+    if ($filename == 'wp-cron.php' ||
+            $filename == 'admin-ajax.php' ||
+            $filename == 'index-extra.php' ||
+            $filename == 'wordpress-file-monitor.php') {
         return;
     }
 
