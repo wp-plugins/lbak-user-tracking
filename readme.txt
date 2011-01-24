@@ -6,7 +6,7 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.7.10
+Stable tag: 1.7.11
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -66,6 +66,11 @@ violated by you (which requires manual editing of the code, there is no other
 way) then it is possible that you will be banned from accessing his website.
 
 == Changelog ==
+
+= 1.7.11 =
+
+* Fixed the time to be aware of your GMT offset in WordPress. Kudos to
+Bill Dentzer for this fix.
 
 = 1.7.10 =
 
