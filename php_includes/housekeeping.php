@@ -198,6 +198,7 @@ function lbakut_activation_setup() {
             'track_post_vars' => true,
             'track_cookies' => false,
             'track_ignore_admin' => true,
+            'track_ignore_guests' => false,
             'search_show_name' => true,
             'search_show_ip' => true,
             'search_show_real_ip' => false,

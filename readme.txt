@@ -6,7 +6,7 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.7.11
+Stable tag: 1.8
 
 An extensive, customisable, fully featured user tracking plugin.
 
@@ -71,8 +71,13 @@ way) then it is possible that you will be banned from accessing his website.
 
 * Added an export function on the search page. You can now export search
 restults to a .csv file stored on your server and download it.
+
 * Added a file management page to allow you to delete any csv files that you
 do not want.
+
+* Added the ability to stop tracking guest users.
+
+* Added to ability to delete all guest user records in the database.
 
 = 1.7.11 =
 

@@ -40,7 +40,7 @@ if (sizeof($files) > 0) {
                 <input type="checkbox" name="files[]" value="'.$fullpath.'" />
                 </td>
                 <td>
-                <a href="'.fullurl.'">'.$file.'</a>
+                <a href="'.$fullurl.'">'.$file.'</a>
                 </td>
                 <td>
                 '.lbakut_format_filesize(filesize($fullpath)).'

@@ -20,6 +20,10 @@ function lbakut_log_activity_start() {
         return;
     }
 
+    if ($options['track_ignore_guests'] && !is_user_logged_in()) {
+        return;
+    }
+
     //Get the specific file name without any leading directories.
     $filename = end(explode('/', $_SERVER['SCRIPT_NAME']));
 

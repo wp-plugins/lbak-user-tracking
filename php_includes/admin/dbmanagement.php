@@ -7,6 +7,10 @@ if (isset($_POST['database_submit'])) {
         case 'nuke':
             $wpdb->query('DELETE FROM `'.$options['main_table_name'].'` WHERE 1');
             break;
+        //DELETE ALL GUEST DATA
+        case 'guests':
+            $wpdb->query('DELETE FROM `'.$options['main_table_name'].'` WHERE `display_name`=""');
+            break;
         //DELETE DATA BY IP ADDRESS
         case 'ip':
             if ($_POST['ip_value']) {
@@ -137,10 +141,25 @@ else if (isset($_POST['schedule_submit'])) {
                         </td>
                         <td>
                             <?php _e('This is an irreversible
-                                                deletion of all data in your user
-                                                tracking log. Only do this if you
-                                                are absolutely certain you want to
-                                                erase all the data you have collected.', 'lbakut'); ?>
+                            deletion of all data in your user
+                            tracking log. Only do this if you
+                            are absolutely certain you want to
+                            erase all the data you have collected.', 'lbakut'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="guests">
+                                <?php _e('Clear all guest data', 'lbakut'); ?>
+                            </label>
+                        </td>
+                        <td>
+                            <input type="radio" name="operation"
+                                   value="guests" id="guests" />
+                        </td>
+                        <td>
+                            <?php _e('This will clear all data from not logged in
+                                users, a.k.a guests.', 'lbakut'); ?>
                         </td>
                     </tr>
                     <tr>

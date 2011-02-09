@@ -70,6 +70,7 @@ else if ($_POST['general_submit'] == 'Submit') {
     }
     $options['delete_on_uninstall'] = $wpdb->escape($_POST['delete_on_uninstall']);
     $options['track_ignore_admin'] = $wpdb->escape($_POST['track_ignore_admin']);
+    $options['track_ignore_guests'] = $wpdb->escape($_POST['track_ignore_guests']);
     $options['use_time_ago'] = $wpdb->escape($_POST['use_time_ago']);
     $options['time_format'] = $wpdb->escape($_POST['time_format']);
     $options['log'] = $wpdb->escape($_POST['log']);
@@ -189,6 +190,21 @@ if ($options['widget_ignored_users'] == '') {
                         </td>
                         <td>
                             <?php _e('Check this to stop tracking admin users.',
+                                    'lbakut'); ?>
+                        </td>
+                    </tr>
+                     <tr>
+                        <td>
+                            <?php _e('<b>Ignore Guests?</b>', 'lbakut'); ?>
+                        </td>
+                        <td>
+                            <input type="hidden" name="track_ignore_guests"
+                                   value="0" />
+                            <input type="checkbox" name="track_ignore_guests"
+                                   value="1" <?php echo $options['track_ignore_guests'] ? 'checked' : ''; ?> />
+                        </td>
+                        <td>
+                            <?php _e('Check this to stop tracking guest users.',
                                     'lbakut'); ?>
                         </td>
                     </tr>
