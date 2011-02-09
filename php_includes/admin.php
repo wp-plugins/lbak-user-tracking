@@ -25,6 +25,7 @@ function lbakut_menu_options() {
         <a class="button-secondary" href="?page=lbakut&step=stats">Stats</a>
         <a class="button-secondary" href="?page=lbakut&step=userstats">User Stats</a>
         <a class="button-secondary" href="?page=lbakut&step=database">Database Management</a>
+        <a class="button-secondary" href="?page=lbakut&step=filemanagement">File Management</a>
         <a class="button-secondary" href="?page=lbakut&step=help">Help/FAQ</a>
         <?php //echo $options['log'] ? '<a class="button-secondary" href="?page=lbakut&step=log">Logs</a>': ''; ?>
         <a class="button-secondary" href="http://donate.lbak.co.uk/" target="_blank">Donate <3</a>
@@ -68,6 +69,10 @@ function lbakut_menu_options() {
 
             case 'userstats':
                 require_once 'admin/userstats.php';
+                break;
+
+            case 'filemanagement':
+                require_once 'admin/filemanagement.php';
                 break;
 
             default:

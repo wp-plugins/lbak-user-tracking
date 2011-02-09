@@ -148,6 +148,39 @@ function lbakut_log_activity_start() {
     $wpdb->insert($options['main_table_name'], $data, $format);
 }
 
+function lbakut_get_csv($rows) {
+    if (isset($rows) && is_array($rows)) {
+        $options = lbakut_get_options();
+        // check for contents before clearing the buffer to silence PHP notices
+        if (ob_get_contents()) {
+            ob_end_clean();
+        }
+
+        $file_name = 'lbakut'.sizeof($rows).'rows'.strftime('%d%m%y%H%M%S', time()).'.csv';
+        $file = fopen(lbakut_get_base_dir().'/csv/'.$file_name, 'x');
+        
+        if (!$file) {
+            return false;
+        }
+
+        $keys = array_keys($rows[0]);
+        fputcsv($file, $keys);
+        
+        foreach ($rows as $row) {
+            $row['time'] = trim(strftime($options['time_format'], $row['time']));
+            fputcsv($file, $row);
+            flush();
+        }
+
+        fclose($file);
+
+        return lbakut_get_base_url().'/csv/'.$file_name;
+    }
+    else {
+        return false;
+    }
+}
+
 function lbakut_test_function() {
     wp_title();
 }

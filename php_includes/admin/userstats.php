@@ -1,7 +1,7 @@
 <?php
     function lbakut_generate_user_login_csv($since) {
-        $file_name = 'user-logins-'.$since.'-days-'.strftime('%d%m%y%H%M%S', time()).'.csv';
-        $file = fopen(lbakut_get_base_dir().'/csv/'.$file_name, 'x');
+        $rows = lbakut_get_users_since($since, true);
+        $file = lbakut_get_csv($rows);
 
         if (!$file) {
             echo '<div class="error">Could not create .csv file. Please ensure that
@@ -9,14 +9,10 @@
                 of this plugin.</div>';
         }
         else {
-            $rows = lbakut_get_users_since($since, true);
-            foreach ($rows as $row) {
-                if ($row['display_name'] == "") $row['display_name'] = 'Guest / Unregistered';
-                fputcsv($file, $row);
-            }
-
+            $file_name = explode('/', $file);
+            $file_name = $file_name[sizeof($file_name)-1];
             echo '<div class="updated"><p>.csv file created. Download it here:
-                <a href="'.lbakut_get_base_url().'/csv/'.$file_name.'">'.$file_name.'</a>
+                <a href="'.$file.'">'.$file_name.'</a>
                     (right click and select "Save target as...")</p></div>';
         }
     }

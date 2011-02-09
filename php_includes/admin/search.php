@@ -1,3 +1,55 @@
+<?php
+if (!empty($_GET['time_first']) && !empty($_GET['time_second'])) {
+$time = 'AND `time` BETWEEN '.(time()-(intval($_GET['time_second']) *
+        intval($_GET['time_second_multiplier']))).' AND
+        '.(time()-(intval($_GET['time_first']) *
+        intval($_GET['time_first_multiplier'])));
+}
+else {
+    $time = 'AND 1';
+}
+
+$display_name = lbakut_search_var_prepare('display_name', 'string');
+$user_id = lbakut_search_var_prepare('user_id', 'int');
+$user_level = lbakut_search_var_prepare('user_level', 'int');
+$ip_address = lbakut_search_var_prepare('ip_address', 'string');
+$real_ip_address = lbakut_search_var_prepare('real_ip_address', 'string');
+$page_name = lbakut_search_var_prepare('page_name', 'string');
+
+$query = "
+        WHERE 1
+        $time
+        $display_name
+        $user_id
+        $user_level
+        $ip_address
+        $real_ip_address
+        $page_name";
+
+if ($_GET['type'] == 'Get CSV') {
+    $rows = $wpdb->get_results('SELECT * FROM `' . $options['main_table_name'] . '`
+        ' . $query . '
+            ORDER BY `time` DESC ', ARRAY_A);
+    $file = lbakut_get_csv($rows);
+    if (!$file) {
+        echo '<div class="error">Could not create .csv file. Please ensure that
+                you have write permission on your server in the csv directory
+                of this plugin.</div>';
+    }
+    else {
+        $file_name = explode('/', $file);
+            $file_name = $file_name[sizeof($file_name)-1];
+            echo '<div class="updated"><p>.csv file created. Download it here:
+                <a href="'.$file.'">'.$file_name.'</a>
+                    (right click and select "Save target as...")</p>
+
+                <p>Your csv files are saved to the '.lbakut_get_base_dir().'/csv/
+                    directory on your server. If you do not want a record of
+                    them on your server, please remember to delete them.</div>';
+    }
+}
+?>
+
 <div id="poststuff" class="ui-sortable meta-box-sortable">
     <div class="postbox">
         <h3><?php _e('What are you looking for?', 'lbakut'); ?></h3>
@@ -114,6 +166,9 @@
                         </td>
                         <td>
                             <input type="submit" value="Search" class="button-primary" />
+                            <input type="submit" name="type" value="Get CSV"
+                                   title="Gets a comma separated value file for this search query."
+                                   class="button-primary" />
                         </td>
                     </tr>
                 </table>
@@ -130,33 +185,6 @@
                 <a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=lbakut&step=displaysettings">click here</a>.
             </p>
             <?php
-
-            if (!empty($_GET['time_first']) && !empty($_GET['time_second'])) {
-                $time = 'AND `time` BETWEEN '.(time()-(intval($_GET['time_second']) *
-                                        intval($_GET['time_second_multiplier']))).' AND
-                                '.(time()-(intval($_GET['time_first']) *
-                                        intval($_GET['time_first_multiplier'])));
-            }
-            else {
-                $time = 'AND 1';
-            }
-
-            $display_name = lbakut_search_var_prepare('display_name', 'string');
-            $user_id = lbakut_search_var_prepare('user_id', 'int');
-            $user_level = lbakut_search_var_prepare('user_level', 'int');
-            $ip_address = lbakut_search_var_prepare('ip_address', 'string');
-            $real_ip_address = lbakut_search_var_prepare('real_ip_address', 'string');
-            $page_name = lbakut_search_var_prepare('page_name', 'string');
-
-            $query = "
-                                WHERE 1
-                    $time
-                    $display_name
-                    $user_id
-                    $user_level
-                    $ip_address
-                    $real_ip_address
-                    $page_name";
 
             //AN EXPLAIN SELECT QUERY FOR INDEX TESTING.
             /*

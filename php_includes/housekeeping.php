@@ -4,6 +4,10 @@
  * This function is called upon the plugin being activated. It creates the
  * database tables and default options.
 */
+function lbakut_is_installed() {
+    return lbakut_get_options() ? true : false;
+}
+
 function lbakut_activation_setup() {
     //Get database object.
     global $wpdb;
@@ -12,10 +16,11 @@ function lbakut_activation_setup() {
     $cur_options = lbakut_get_options();
 
     //CALL UPGRADE FUNCTION HERE IF NEEDED
-
-    lbakut_upgrade_fix('1.7.2', 'lbakut_stats_format_fix');
-    lbakut_upgrade_fix('1.7.3', 'lbakut_remove_deprecated_vars');
-    lbakut_upgrade_fix('1.7.5', 'lbakut_alter_user_agent_index');
+    if (lbakut_is_installed()) {
+        lbakut_upgrade_fix('1.7.2', 'lbakut_stats_format_fix');
+        lbakut_upgrade_fix('1.7.3', 'lbakut_remove_deprecated_vars');
+        lbakut_upgrade_fix('1.7.5', 'lbakut_alter_user_agent_index');
+    }
 
     //END UPGRADE FUNCTION CALLS
 
@@ -417,21 +422,12 @@ function lbakut_database_management_cron() {
  * Functions to get, delete and update the lbakut options.
 */
 function lbakut_get_options() {
-    global $lbakut_options;
-    if (!isset($lbakut_options)) {
-        $lbakut_options = get_option('lbakut_options');
-    }
-    return $lbakut_options;
+    return get_option('lbakut_options', false);
 }
 function lbakut_update_options($options) {
-    global $lbakut_options;
-    update_option('lbakut_options', $options);
-    $lbakut_options = $options;
-    return $lbakut_options;
+    return update_option('lbakut_options', $options);
 }
 function lbakut_delete_options() {
-    global $lbakut_options;
-    unset($lbakut_options);
     return delete_option('lbakut_options');
 }
 
