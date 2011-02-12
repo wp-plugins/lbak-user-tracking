@@ -8,11 +8,11 @@ function insert_user_id_from_dropdown() {
     document.lbakut_widget_form.user.value;
 }
 
-function show(id) {
+function lbakut_show(id) {
     document.getElementById(id).style.display = 'block';
 }
 
-function hide(id) {
+function lbakut_hide(id) {
     document.getElementById(id).style.display = 'none';
 }
 

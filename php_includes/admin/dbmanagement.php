@@ -283,7 +283,7 @@ else if (isset($_POST['schedule_submit'])) {
                         <td>
                         </td>
                         <td>
-                            <input type="button" onclick="show('database_submit')"
+                            <input type="button" onclick="lbakut_show('database_submit')"
                                    value="Click to confirm options"
                                    class="button-secondary"/>
                             <input type="submit" name="database_submit"
