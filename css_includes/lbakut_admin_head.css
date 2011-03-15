@@ -70,6 +70,8 @@
     border-radius: 6px;
     font-size:12px;
     height: auto;
+    max-height: 600px;
+    overflow: auto;
     width:auto;
     max-width: 300px;
     padding:12px;
