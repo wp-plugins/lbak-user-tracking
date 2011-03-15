@@ -134,9 +134,14 @@ function lbakut_time_format($time, $options = null) {
         $options = lbakut_get_options();
     }
 
+    $timezone = date_default_timezone_get();
+    date_default_timezone_set('UTC');
+
     $gmt_offset = get_option('gmt_offset');
 
     $time = $time + ($gmt_offset ? $gmt_offset : 0) * 3600;
+
+    date_default_timezone_set($timezone);
 
     return strftime($options['time_format'] ? $options['time_format'] :
                     '%l:%M:%S %P, %a %e %b, %Y', $time);
