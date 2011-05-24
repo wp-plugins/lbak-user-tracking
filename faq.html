@@ -1,0 +1,84 @@
+        How do I set up the plugin?</a><br><br><a href="#What is a shortcode and how do I use one?">
+        What is a shortcode and how do I use one?</a><br><br><a href="#You're awesome. Can I give you some money?">
+        You're awesome. Can I give you some money?</a><br><br><a href="#What are GET variables?">
+        What are GET variables?</a><br><br><a href="#What are POST variables?">
+        What are POST variables?</a><br><br><a href="#What are Cookies when they aren't a delicious snack?">
+        What are Cookies when they aren't a delicious snack?</a><br><br><a href="#What is a referrer?">
+        What is a referrer?</a><br><br><a href="#What is a user agent?">
+        What is a user agent?</a><br><br><a href="#What is an ip address and why do you have a "real" one?">
+        What is an ip address and why do you have a "real" one?</a><br><br><a href="#What's all this about usage statistics?">
+        What's all this about usage statistics?</a><br><br><a href="#How do I print out the log and/or charts?">
+        How do I print out the log and/or charts?</a><br><br><a href="#Still stuck?">Still stuck? Get in
+        touch!</a><br><br><h2>Answers</h2><div id="How do I set up the plugin?" class="question"><h3>How do I set up the
+            plugin?</h3><div class="faq-content">There really isn't any setting up to be done. Once installed the plugin
+            will happily chug along on its own without any need for configuration. You can, however, use the somewhat
+            extensive settings in the Settings menu to customise your experience with the LBAK User Tracking plugin.
+            They all have explanations of what they do associated with them. If you are confused by any of the options,
+            however, drop me an email and I'll work on improving the documentation :) samwho@lbak.co.uk <br><br><a
+                href="#top" class="button-secondary">Back to top</a></div></div><div id="What is a shortcode and how do I use one?" class="question"><h3>What is a shortcode and how do I use one?</h3><div class="faq-content">A shortcode is a bit of text you can put in your posts that get filtered and changed into something useful. For example, a lot of forums use "bbcode" which stands for bulletin board code, which is a type of short code. They have tags like [b] for bold, [i] for italic and so on. <br>
+<br>
+If you have the setting enabled, LBAK User Tracking allows you to post the 3 pie charts found in the stats section to your blog (they will update dynamically, too). Here are some examples of how to use the shortcodes for you:<br>
+<blockquote><br>
+[lbakut type="browser" title="Browser Stats" width="600" height="300"]<br>
+</blockquote><br>
+Most of the syntax is self explanatory. The width and height are in pixels, they are optional and will default to 700x350 if left out and you can't exceed 300,000 total pixels in the image due to restrictions on the Google Charts API so make sure width*height is less than 300,000. <br>
+<br>
+The "type" attribute can be one of three values: "browser", "os" or "pageviews" for each of the charts respectively. This is the only mandatory attribute. <br>
+<br>
+The "title" attribute is the heading on the image. If left blank no title will be shown. <br><br><a href="#top"
+    class="button-secondary">Back to top</a></div></div><div id="You&#39;re awesome. Can I give you some money?"
+    class="question"><h3>You're awesome. Can I give you some money?</h3><div class="faq-content">You're too kind! Of
+        course you can, there is a Donate link at the top of this page that will take you to a page with a link to my
+        PayPal on it. Donations are greatly appreciated and will find you a place in my heart. Right next to my love of
+        programming and The Big Bang Theory. <br><br><a href="#top" class="button-secondary">Back to top</a></div></div><div id="What are GET variables?" class="question"><h3>What are GET variables?</h3><div class="faq-content">GET variables refer to variables that are sent to a web server in the URL. If you're somewhat new to all of this computer lark, I will do my best to explain: <br>
+<br>
+A URL is a "Uniform resource locator". You use them every single time you browse the web, here are some examples of a URL: http://lbak.co.uk, http://facebook.com, http://google.com. They're web addresses, if you want. Sometimes you will see a url like this: http://lbak.co.uk?var1=hello. The question mark initiates the start of the GET variables and the ampersand symbol (&amp;) separates them. They are simple key=value pairs that get passed to the web server to help make content more dynamic and catered to you. <br>
+<br>
+In the LBAK User Tracking plugin these key=value pars will be displayed to you without the question marks or the ampersands. Just a list of key=value pairs that got sent in that page click. <br>
+<br><br><a href="#top" class="button-secondary">Back to top</a></div></div><div id="What are POST variables?" class="question"><h3>What are POST variables?</h3><div class="faq-content">POST variables are very similar to GET variables except that they are not passed in the URL and they have less limitations. GET variables, for examples, are subject to length limits. I'm not sure of the exact numbers off the top of my head but POST variables are a lot less limited in length (to the point where they are considered more or less unlimited). <br>
+<br>
+Form data is very often submitted to web pages as POST data. <br>
+<br><br><a href="#top" class="button-secondary">Back to top</a></div></div><div id="What are Cookies when they aren&#39;t a delicious snack?" class="question"><h3>What are Cookies when they aren't a delicious snack?</h3><div class="faq-content">Ahh, cookies. There are a lot of misconceptions and myths about cookies. Here's what they really are: <br>
+<br>
+When your web browser accesses a web page, that webpage can ask your web browser to save some information on your hard drive for future reference. Don't worry, as far as I am aware there aren't currently any ways to install virusses using cookies but they can be used to kind of track your internet usage. <br>
+<br>
+Your web browser will have a folder deep inside your hard drive somewhere that contains a whole host of small text files containing what will most likely look like gibberish. Very often websites will want to keep what is called "session data" on you (data stored until you close your browser or are inactive for a certain amount of time, usually 15 minutes), shopping sites do this to store baskets or recommend items that would interest you. Session data is saved as a long, seemingly meaningless string of characters with the key "PHPSESSID" or something like that (it will differ if the site does not use PHP as a scripting language or decides to specify their own names for sessions). This is actually just a unique identifier for the server to recognise and retrive the right data for. <br>
+<br>
+In conclusion, cookies are just variables that web pages want to save that last through browser sessions. They tend not
+to be malicious and there is no real reason to be scared of them. <br><br><a href="#top" class="button-secondary">Back
+    to top</a></div></div><div id="What is a referrer?" class="question"><h3>What is a referrer?</h3><div
+class="faq-content">A referrer is something sent by your browser to tell the next web page where you came from. It is an
+optional thing, though, and some browsers choose not to send it or they send you misinformation. It isn't recommended to
+trust it. <br><br><a href="#top" class="button-secondary">Back to top</a></div></div><div id="What is a user agent?" class="question"><h3>What is a user agent?</h3><div class="faq-content">User Agent is another piece of information that your browser sends to web pages. It is a unique string that identifies what web browser and operating system you are using. There is a project called the "PHP Browscap" which aims to try and identify the browser capabilities of every browser out there and they are doing a really good job. LBAK User Tracking uses the PHP Browscap technology (automatically downloads updates every week for you, too, so you've always got the up to date info on web browsers) that is worked on by a guy called Gary Keith and can be found here: <a href="http://code.google.com/p/phpbrowscap/" target="_blank">http://code.google.com/p/phpbrowscap/</a>. <br>
+<br>
+Note: LBAK User Tracking only uses his definitions file, not his class file. Plans to use his class file may formulate
+at some point in the future. <br><br><a href="#top" class="button-secondary">Back to top</a></div></div><div id="What is an ip address and why do you have a &quot;real&quot; one?" class="question"><h3>What is an ip address and why do you have a "real" one?</h3><div class="faq-content">IP address stands for Internet Protocol Address. Before routers it would uniquely identify your computer for a short period of time but now it will identify you as anyone connecting through the same router as you. This causes some interesting problems on large networks such as schools and Universities. <br>
+<br>
+An IP address consists of 4 "octets" (sections ranging from 0 to 255). A sample IP address would be 173.194.36.104, which is Google (go on, put it into your web browser if you don't believe me). It is how both clients and servers are identified on the web. Clients are likely to change their IP addresses from time to time (it just happens) but servers tend to stick with a "static" ip address that tends not to change. <br>
+<br>
+The reason that there is a column called "real" ip address is because of something called a "proxy". A proxy will
+attempt to mask your IP address from web servers so you can browse the internet anonymously. Some of these proxies,
+however, will send your real IP address in a subtle way. LBAK User Tracking checks for the tell tale signs of proxy
+usage and attempts to log the "real" ip address of the user. The field will generally be empty, though, because most
+proxies don't reveal your real IP address so I wouldn't hold out much hope for catching those pesky proxy using
+spammers. Attempts are being made to find better methods of detecting real IP addresses, though, and may be released
+into this plugin in future. <br><br><a href="#top" class="button-secondary">Back to top</a></div></div><div id="What&#39;s all this about usage statistics?" class="question"><h3>What's all this about usage statistics?</h3><div class="faq-content">The LBAK usage statistics is a feature released in version 1.7 to help me get a better idea of who is using the plugin, what they are using it for and primarily for reporting errors back to me.<br>
+<br>
+The information that gets sent to my server varies. At various points in the code I call a function that sends a message to my server and that usually contains your website URL, the page you were viewing, the data that was sent to that page, the time it happened, what PHP version you were using and then a customised message for that log report.<br>
+<br>
+By default you are opted in to sending this data but it is easy to turn it off. Just untick the box labelled "Send usage
+data?" and data will not be sent to my server.<br><br><a href="#top" class="button-secondary">Back to top</a></div></div><div id="How do I print out the log and/or charts?" class="question"><h3>How do I print out the log and/or charts?</h3><div class="faq-content">To embed the stats charts on your page you need to use some shortcodes.<br>
+<br>
+OS Chart: [lbakut type="os"]<br>
+Browser Chart: [lbakut type="browser"]<br>
+Pagewviews Chart: [lbakut type="pageviews"]<br>
+<br>
+They support a variety of attributes: title, height and width. <br>
+<br>
+Here's an example of using all three:<br>
+<br>
+[lbakut type="os" height="300" width="400" title="OS Breakdown Chart"]<br>
+<br>
+<br>
+At the moment, you cannot include logs in posts. There are no plans to add such a feature in future, either.<br><br><a
+    href="#top" class="button-secondary">Back to top</a></div></div><div id="Still stuck?" class="question">
