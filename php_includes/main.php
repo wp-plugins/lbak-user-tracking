@@ -161,14 +161,14 @@ function lbakut_get_csv($rows) {
 
         $file_name = 'lbakut'.sizeof($rows).'rows'.strftime('%d%m%y%H%M%S', time()).'.csv';
         $file = fopen(lbakut_get_base_dir().'/csv/'.$file_name, 'x');
-        
+
         if (!$file) {
             return false;
         }
 
         $keys = array_keys($rows[0]);
         fputcsv($file, $keys);
-        
+
         foreach ($rows as $row) {
             $row['time'] = trim(strftime($options['time_format'], $row['time']));
             fputcsv($file, $row);
@@ -350,7 +350,7 @@ function lbakut_get_web_page($url) {
         );
 
         $ch = curl_init($url);
-        
+
         // fix for people who are still running old versions of PHP
         if (function_exists('curl_setopt_array')) {
             curl_setopt_array($ch, $options);
@@ -438,23 +438,7 @@ function lbakut_array_flatten($array, $return = null) {
  * log occurred.
  */
 function lbakut_log($message, $origin = null, $type = "message", $override = false) {
-    $options = lbakut_get_options();
-    if (($options['log'] != false && $message != null) || $override) {
-        $message .= ' (lbakut wp plugin v' . lbakut_get_version().')';
-        $url = 'http://lbak.co.uk/log.php?step=new';
-        $url .= '&message=' . urlencode($message) . '&url=' .
-            urlencode($_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'] .
-            $_SERVER['QUERY_STRING']) . '&phpver=' . phpversion() .
-        '&origin=' . urlencode($origin) .
-        '&post_vars=' . lbakut_get_post_vars() .'&type='.$type.'&tag=lbakut';
-        if (($result = lbakut_get_web_page($url))) {
-            return $result;
-        } else {
-            return false;
-        }
-    } else {
-        return false;
-    }
+    // used to contain logging code, since deprecated
 }
 
 /*

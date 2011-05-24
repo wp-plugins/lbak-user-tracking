@@ -6,11 +6,14 @@ Donate link: http://donate.lbak.co.uk/
 Tags: tracking, logging, activity, lbak, auditing, record
 Requires at least: 3.0
 Tested up to: 3.0.1
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 
 An extensive, customisable, fully featured user tracking plugin.
 
 == Description ==
+
+IMPORTANT NOTE: The original author of this plugin no longer supports or maintains it. If anyone wishes to take over,
+please feel free to get in touch.
 
 The LBAK User Tracking plugin is a fully featured, page by page tracking plugin for your blog. Every time a page is visited on your blog, the plugin logs a whole host of information on the person who visited the page.
 
@@ -67,6 +70,12 @@ way) then it is possible that you will be banned from accessing his website.
 
 == Changelog ==
 
+= 1.8.3 =
+
+* The project has now been deprecated. I won't be working
+on it or answering questions on it any more. If anyone else
+wants to take over, feel free to contact me :)
+
 = 1.8.2 =
 
 * Another small timezone fix.
@@ -94,7 +103,7 @@ Bill Dentzer for this fix.
 
 = 1.7.10 =
 
-* A small tweak to ignore scans from the WordPress File Monitor plugin. 
+* A small tweak to ignore scans from the WordPress File Monitor plugin.
 
 = 1.7.9 =
 
@@ -139,7 +148,7 @@ thread http://wordpress.org/support/topic/plugin-lbak-user-tracking-exposure-of-
 
 = 1.7.2 =
 
-* Fixed yet another issue with stats logging. 
+* Fixed yet another issue with stats logging.
 
 = 1.7.1 =
 
